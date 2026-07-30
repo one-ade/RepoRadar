@@ -1,0 +1,21 @@
+[package]
+name = "repo-radar"
+version = "0.1.0"
+description = "Local Git and GitHub workspace manager"
+authors = ["RepoRadar contributors"]
+edition = "2024"
+
+[lib]
+name = "repo_radar_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.6.3", features = [] }
+
+[dependencies]
+dunce = "1.0.5"
+rusqlite = { version = "0.40.1", features = ["bundled"] }
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.151"
+tauri = { version = "2.11.5", features = [] }
+tauri-plugin-dialog = "2.7.2"
