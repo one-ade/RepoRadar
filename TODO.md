@@ -67,7 +67,7 @@
 - [x] Issue 详情与编辑
 - [x] Actions Workflow、Run、日志和 Artifact
 - [x] Release 列表、创建和下载
-- [ ] Release 编辑与资源上传
+- [x] Release 编辑与资源上传
 - [x] 拆分 GitHub 后端能力模块并通过单测与 Clippy 审查
 - [x] 拆分前端 IPC 门面并保持命令名称兼容
 - [x] 将 Tauri 命令适配层按领域拆分并保持前端命令名称兼容

@@ -121,6 +121,7 @@ export interface GithubPullRequestDetail {
 }
 
 export type GithubIssueDetail = GithubPullRequestDetail;
+export type GithubReleaseDetail = GithubPullRequestDetail;
 
 export interface GithubIssueEdit {
   title: string | null;
@@ -183,6 +184,19 @@ export interface GithubRelease {
   isLatest: boolean;
   isPrerelease: boolean;
   publishedAt: string | null;
+}
+
+export interface GithubReleaseEdit {
+  tag: string | null;
+  title: string | null;
+  notes: string | null;
+  notesFile: string | null;
+  discussionCategory: string | null;
+  target: string | null;
+  draft: boolean | null;
+  latest: boolean | null;
+  prerelease: boolean | null;
+  verifyTag: boolean;
 }
 
 export interface GithubOverview {

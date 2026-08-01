@@ -6,6 +6,8 @@ import type {
   GithubIssueEdit,
   GithubOverview,
   GithubPullRequestDetail,
+  GithubReleaseDetail,
+  GithubReleaseEdit,
 } from "./types";
 
 export function getGithubOverview(path: string): Promise<GithubOverview> {
@@ -106,6 +108,27 @@ export function createGithubRelease(
     draft,
     prerelease,
   });
+}
+
+export function getReleaseDetail(path: string, tag: string): Promise<GithubReleaseDetail> {
+  return invoke<GithubReleaseDetail>("get_release_detail", { path, tag });
+}
+
+export function editGithubRelease(
+  path: string,
+  tag: string,
+  edit: GithubReleaseEdit,
+): Promise<void> {
+  return invoke("edit_github_release", { path, tag, edit });
+}
+
+export function uploadGithubReleaseAssets(
+  path: string,
+  tag: string,
+  files: readonly string[],
+  clobber = false,
+): Promise<void> {
+  return invoke("upload_github_release_assets", { path, tag, files, clobber });
 }
 
 export function downloadGithubRelease(

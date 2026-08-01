@@ -4,6 +4,7 @@ import GithubConfigurationPanel from "./GithubConfigurationPanel.vue";
 import GithubIssueWorkspace from "./GithubIssueWorkspace.vue";
 import GithubPullRequestDetailPanel from "./GithubPullRequestDetailPanel.vue";
 import GithubPullRequestSection from "./GithubPullRequestSection.vue";
+import GithubReleaseWorkspace from "./GithubReleaseWorkspace.vue";
 
 type RunAction = (action: () => Promise<void>, label?: string) => Promise<void>;
 
@@ -212,19 +213,11 @@ const emit = defineEmits<{
           </div>
         </div>
       </section>
-      <section>
-        <h4>Releases · {{ overview.releases.length }}</h4>
-        <div v-for="release in overview.releases.slice(0, 4)" :key="release.tagName" class="github-row">
-          <span>{{ release.tagName }}</span>
-          <strong>{{ release.name ?? release.tagName }}</strong>
-          <div class="github-row-actions">
-            <small>{{ release.isLatest ? "Latest" : release.isDraft ? "Draft" : "Release" }}</small>
-            <button :disabled="busy" @click="emit('download-release', release.tagName)">
-              下载
-            </button>
-          </div>
-        </div>
-      </section>
+      <GithubReleaseWorkspace
+        :path="path" :releases="overview.releases" :busy="busy" :run-action="runAction"
+        @download="emit('download-release', $event)" @refresh="emit('refresh')"
+        @notice="emit('notice', $event)"
+      />
     </div>
     <GithubPullRequestDetailPanel
       v-if="selectedPullRequest"

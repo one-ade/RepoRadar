@@ -48,9 +48,9 @@ function removalSelected(key: TextEditKey) {
 </script>
 
 <template>
-  <details class="github-issue-editor">
+  <details class="github-detail-editor">
     <summary>编辑 Issue</summary>
-    <div class="github-issue-edit-grid">
+    <div class="github-edit-grid">
       <label>标题<input v-model="form.title" data-edit-field aria-label="Issue 标题" :disabled="busy" /></label>
       <label class="wide">正文<textarea v-model="form.body" data-edit-field aria-label="Issue 正文" :disabled="busy"></textarea></label>
       <label v-for="field in textFields" :key="field.key">
