@@ -8,6 +8,7 @@ mod issues;
 mod overview;
 mod releases;
 mod repositories;
+mod resources;
 
 use serde::{Deserialize, Serialize};
 
@@ -34,6 +35,10 @@ pub use releases::{
     GithubReleaseEdit, create_release, download_release, edit_release, upload_release_assets,
 };
 pub use repositories::{clone_repository, create_repository, fork_repository, sync_repository};
+pub use resources::{
+    GithubCodespace, GithubDiscussion, GithubProject, codespace_log, codespaces, delete_codespace,
+    discussions, project_items, projects, stop_codespace,
+};
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]

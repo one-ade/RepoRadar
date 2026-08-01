@@ -13,6 +13,25 @@ pub(super) fn repository_reference(path: &Path) -> Result<String, String> {
     parse_repository_reference(&remote).ok_or_else(|| "origin 不是 GitHub 仓库地址".to_owned())
 }
 
+pub(super) fn repository_owner(path: &Path) -> Result<String, String> {
+    repository_reference(path)?
+        .split('/')
+        .nth(1)
+        .map(str::to_owned)
+        .ok_or_else(|| "无法解析 GitHub 仓库所有者".to_owned())
+}
+
+pub(super) fn repository_slug(path: &Path) -> Result<String, String> {
+    let reference = repository_reference(path)?;
+    repository_slug_from_reference(&reference).ok_or_else(|| "无法解析 GitHub 仓库名称".to_owned())
+}
+
+fn repository_slug_from_reference(reference: &str) -> Option<String> {
+    let mut parts = reference.split('/');
+    parts.next()?;
+    Some(format!("{}/{}", parts.next()?, parts.next()?))
+}
+
 pub(super) fn gh_json<T>(reference: &str, path: &Path, args: &[&str]) -> Result<T, String>
 where
     T: for<'de> Deserialize<'de>,
@@ -154,6 +173,10 @@ mod tests {
         assert_eq!(
             parse_repository_reference("https://github.com/owner/repo.git"),
             Some("github.com/owner/repo".to_owned())
+        );
+        assert_eq!(
+            repository_slug_from_reference("github.example.com/owner/repo"),
+            Some("owner/repo".to_owned())
         );
         assert_eq!(
             parse_repository_reference("git@github.com:owner/repo.git"),
