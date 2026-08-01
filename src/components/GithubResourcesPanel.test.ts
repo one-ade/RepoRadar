@@ -58,4 +58,15 @@ describe("GithubResourcesPanel", () => {
     expect(dialog.confirm).toHaveBeenCalledOnce();
     expect(api.deleteGithubCodespace).toHaveBeenCalledWith("D:/repo", "silver-space", true);
   });
+
+  it("does not render active URL schemes from GitHub resources", async () => {
+    api.getGithubProjects.mockResolvedValue([{ number: 7, title: "Roadmap", url: "javascript:alert(1)", id: "P_1", items: { totalCount: 0 }, fields: { totalCount: 0 } }]);
+    const wrapper = mount(GithubResourcesPanel, {
+      props: { path: "D:/repo", busy: false, runAction: async (action: () => Promise<void>) => action() },
+    });
+    await wrapper.get('[data-action="load-projects"]').trigger("click");
+    await flushPromises();
+
+    expect(wrapper.find("a").exists()).toBe(false);
+  });
 });

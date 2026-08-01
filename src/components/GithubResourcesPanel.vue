@@ -15,6 +15,7 @@ import {
   type GithubDiscussion,
   type GithubProject,
 } from "../api";
+import { externalUrl } from "../externalUrl";
 
 type RunAction = (action: () => Promise<void>, label?: string) => Promise<void>;
 const props = defineProps<{ path: string; busy: boolean; runAction: RunAction }>();
@@ -93,7 +94,7 @@ watch(() => props.path, () => {
         <input v-model="projectQuery" class="github-resource-filter" aria-label="Project 项过滤条件" placeholder="项过滤条件（可选）" />
         <div v-for="project in projects ?? []" :key="project.id" class="github-row">
           <span>#{{ project.number }}</span>
-          <strong><a :href="project.url" target="_blank" rel="noreferrer">{{ project.title }}</a></strong>
+          <strong><a v-if="externalUrl(project.url)" :href="externalUrl(project.url)" target="_blank" rel="noreferrer">{{ project.title }}</a><span v-else>{{ project.title }}</span></strong>
           <div class="github-row-actions">
             <small>{{ project.items.totalCount }} items · {{ project.fields.totalCount }} fields</small>
             <button data-action="view-project-items" :disabled="busy" @click="viewProjectItems(project.number)">项目项</button>
@@ -109,7 +110,7 @@ watch(() => props.path, () => {
         </div>
         <div v-for="discussion in discussions ?? []" :key="discussion.id" class="github-row">
           <span>#{{ discussion.number }}</span>
-          <strong><a :href="discussion.url" target="_blank" rel="noreferrer">{{ discussion.title }}</a></strong>
+          <strong><a v-if="externalUrl(discussion.url)" :href="externalUrl(discussion.url)" target="_blank" rel="noreferrer">{{ discussion.title }}</a><span v-else>{{ discussion.title }}</span></strong>
           <div class="github-row-actions"><small>{{ discussion.category.name }} · {{ discussion.comments.totalCount }} comments</small><span>{{ discussion.isAnswered ? "已回答" : "讨论中" }}</span></div>
         </div>
       </section>

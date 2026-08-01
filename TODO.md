@@ -88,7 +88,7 @@
 - [x] 安全的高级 `gh` 命令面板
 - [x] `gh api` 请求构造器
 - [x] GitHub Enterprise Server Remote 解析与多 Host 认证状态
-- [ ] 完成扩展能力代码审查
+- [x] 完成扩展能力代码审查
 
 ## 里程碑 6：发布
 

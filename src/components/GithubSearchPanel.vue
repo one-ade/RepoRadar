@@ -2,6 +2,7 @@
 import { ref, shallowRef, watch } from "vue";
 
 import { searchGithub, type GithubDetailValue } from "../api";
+import { externalUrl } from "../externalUrl";
 
 type SearchKind = "code" | "commits" | "issues" | "prs" | "repos";
 type RunAction = (action: () => Promise<void>, label?: string) => Promise<void>;
@@ -35,8 +36,7 @@ function resultTitle(value: GithubDetailValue) {
 }
 
 function resultUrl(value: GithubDetailValue) {
-  const url = record(value).url;
-  return typeof url === "string" ? url : "";
+  return externalUrl(record(value).url);
 }
 
 watch(() => props.path, () => { results.value = null; });

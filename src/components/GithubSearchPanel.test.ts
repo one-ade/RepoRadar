@@ -22,4 +22,16 @@ describe("GithubSearchPanel", () => {
     expect(wrapper.text()).toContain("acme/radar");
     expect(wrapper.text()).toContain("futureField");
   });
+
+  it("does not render active URL schemes from search results", async () => {
+    api.searchGithub.mockResolvedValue([{ fullName: "acme/radar", url: "javascript:alert(1)" }]);
+    const wrapper = mount(GithubSearchPanel, {
+      props: { path: "D:/repo", busy: false, runAction: async (action: () => Promise<void>) => action() },
+    });
+    await wrapper.get('[aria-label="GitHub 搜索条件"]').setValue("radar");
+    await wrapper.get("form").trigger("submit");
+    await flushPromises();
+
+    expect(wrapper.find("a").exists()).toBe(false);
+  });
 });
