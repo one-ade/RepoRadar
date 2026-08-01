@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { GithubOverview, GithubPullRequest, GithubPullRequestDetail } from "../api";
 import GithubConfigurationPanel from "./GithubConfigurationPanel.vue";
+import GithubIssueWorkspace from "./GithubIssueWorkspace.vue";
 import GithubPullRequestDetailPanel from "./GithubPullRequestDetailPanel.vue";
 import GithubPullRequestSection from "./GithubPullRequestSection.vue";
 
@@ -45,6 +46,7 @@ const emit = defineEmits<{
   "close-pull-request": [];
   "comment-issue": [number: number];
   "close-issue": [number: number];
+  refresh: [];
   "dispatch-workflow": [workflowId: number];
   "view-run": [databaseId: number];
   "rerun-run": [databaseId: number];
@@ -174,17 +176,11 @@ const emit = defineEmits<{
         @review="(number, action) => emit('review', number, action)"
         @merge="emit('merge', $event)"
       />
-      <section>
-        <h4>Issues · {{ overview.issues.length }}</h4>
-        <div v-for="item in overview.issues.slice(0, 5)" :key="item.number" class="github-row">
-          <span>#{{ item.number }}</span>
-          <strong>{{ item.title }}</strong>
-          <div class="github-row-actions">
-            <button :disabled="busy" @click="emit('comment-issue', item.number)">评论</button>
-            <button :disabled="busy" @click="emit('close-issue', item.number)">关闭</button>
-          </div>
-        </div>
-      </section>
+      <GithubIssueWorkspace
+        :path="path" :issues="overview.issues" :busy="busy" :run-action="runAction"
+        @comment="emit('comment-issue', $event)" @close="emit('close-issue', $event)"
+        @refresh="emit('refresh')" @notice="emit('notice', $event)"
+      />
       <section>
         <h4>Workflows · {{ overview.workflows.length }}</h4>
         <div v-for="workflow in overview.workflows.slice(0, 4)" :key="workflow.id" class="github-row">

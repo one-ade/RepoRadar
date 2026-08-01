@@ -120,6 +120,31 @@ export interface GithubPullRequestDetail {
   readonly fields: readonly GithubDetailField[];
 }
 
+export type GithubIssueDetail = GithubPullRequestDetail;
+
+export interface GithubIssueEdit {
+  title: string | null;
+  body: string | null;
+  addAssignees: string | null;
+  removeAssignees: string | null;
+  addLabels: string | null;
+  removeLabels: string | null;
+  addProjects: string | null;
+  removeProjects: string | null;
+  milestone: string | null;
+  removeMilestone: boolean;
+  issueType: string | null;
+  removeType: boolean;
+  parent: string | null;
+  removeParent: boolean;
+  addSubIssues: string | null;
+  removeSubIssues: string | null;
+  addBlockedBy: string | null;
+  removeBlockedBy: string | null;
+  addBlocking: string | null;
+  removeBlocking: string | null;
+}
+
 export interface GithubIssue {
   number: number;
   title: string;

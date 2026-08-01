@@ -64,7 +64,7 @@
 - [x] Pull Request 列表、创建、Review 和合并
 - [x] Pull Request 详情
 - [x] Issue 列表、创建、评论和关闭
-- [ ] Issue 详情与编辑
+- [x] Issue 详情与编辑
 - [x] Actions Workflow、Run、日志和 Artifact
 - [x] Release 列表、创建和下载
 - [ ] Release 编辑与资源上传

@@ -254,6 +254,7 @@ onUnmounted(() => stopScanProgress?.());
               @close-pull-request="clearPullRequest"
               @comment-issue="commentGithubIssue"
               @close-issue="closeGithubIssue"
+              @refresh="refreshGithub"
               @dispatch-workflow="dispatchGithubWorkflow"
               @view-run="viewGithubRun"
               @rerun-run="rerunGithubWorkflow"

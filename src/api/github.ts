@@ -2,6 +2,8 @@ import { invoke } from "@tauri-apps/api/core";
 
 import type {
   GithubConfiguration,
+  GithubIssueDetail,
+  GithubIssueEdit,
   GithubOverview,
   GithubPullRequestDetail,
 } from "./types";
@@ -15,6 +17,10 @@ export function getPullRequestDetail(
   number: number,
 ): Promise<GithubPullRequestDetail> {
   return invoke<GithubPullRequestDetail>("get_pull_request_detail", { path, number });
+}
+
+export function getIssueDetail(path: string, number: number): Promise<GithubIssueDetail> {
+  return invoke<GithubIssueDetail>("get_issue_detail", { path, number });
 }
 
 export function getGithubConfiguration(path: string): Promise<GithubConfiguration> {
@@ -166,6 +172,10 @@ export function mergePullRequest(
 
 export function createIssue(path: string, title: string, body: string): Promise<string> {
   return invoke<string>("create_issue", { path, title, body });
+}
+
+export function editIssue(path: string, number: number, edit: GithubIssueEdit): Promise<void> {
+  return invoke("edit_issue", { path, number, edit });
 }
 
 export function commentIssue(path: string, number: number, body: string): Promise<void> {
