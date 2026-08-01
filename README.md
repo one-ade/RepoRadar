@@ -4,7 +4,7 @@ RepoRadar 是一个使用 Rust、Tauri 2 和 Vue 3 构建的本地 Git/GitHub �
 
 ## 当前状态
 
-项目正在按 [代办清单](docs/TODO.md) 分阶段实现。首个里程碑提供：
+项目正在按 [代办清单](TODO.md) 分阶段实现。首个里程碑提供：
 
 - Tauri + Vue 3 桌面应用骨架
 - SQLite 数据库初始化与迁移
