@@ -2,7 +2,7 @@ use std::{collections::BTreeMap, path::Path};
 
 use serde::{Deserialize, Serialize};
 
-use super::client::{gh_output, repository_reference};
+use super::client::{gh_output, repository_reference, required};
 
 const PULL_REQUEST_DETAIL_FIELDS: &[&str] = &[
     "additions",
@@ -83,6 +83,27 @@ const ISSUE_DETAIL_FIELDS: &[&str] = &[
     "url",
 ];
 
+const RELEASE_DETAIL_FIELDS: &[&str] = &[
+    "apiUrl",
+    "assets",
+    "author",
+    "body",
+    "createdAt",
+    "databaseId",
+    "id",
+    "isDraft",
+    "isImmutable",
+    "isPrerelease",
+    "name",
+    "publishedAt",
+    "tagName",
+    "tarballUrl",
+    "targetCommitish",
+    "uploadUrl",
+    "url",
+    "zipballUrl",
+];
+
 #[derive(Debug, Deserialize, PartialEq, Serialize)]
 #[serde(untagged)]
 pub enum GithubDetailValue {
@@ -106,28 +127,37 @@ pub struct GithubPullRequestDetail {
 }
 
 pub type GithubIssueDetail = GithubPullRequestDetail;
+pub type GithubReleaseDetail = GithubPullRequestDetail;
 
 pub fn pull_request_detail(path: &Path, number: u64) -> Result<GithubPullRequestDetail, String> {
-    fetch_detail(path, number, "pr", PULL_REQUEST_DETAIL_FIELDS)
+    fetch_detail(path, &number.to_string(), "pr", PULL_REQUEST_DETAIL_FIELDS)
 }
 
 pub fn issue_detail(path: &Path, number: u64) -> Result<GithubIssueDetail, String> {
-    fetch_detail(path, number, "issue", ISSUE_DETAIL_FIELDS)
+    fetch_detail(path, &number.to_string(), "issue", ISSUE_DETAIL_FIELDS)
+}
+
+pub fn release_detail(path: &Path, tag: &str) -> Result<GithubReleaseDetail, String> {
+    fetch_detail(
+        path,
+        required(tag, "Release Tag")?,
+        "release",
+        RELEASE_DETAIL_FIELDS,
+    )
 }
 
 fn fetch_detail(
     path: &Path,
-    number: u64,
+    identifier: &str,
     kind: &str,
     fields: &[&str],
 ) -> Result<GithubPullRequestDetail, String> {
     let reference = repository_reference(path)?;
-    let number = number.to_string();
     let requested_fields = fields.join(",");
     let output = gh_output(
         &reference,
         path,
-        &[kind, "view", &number, "--json", &requested_fields],
+        &[kind, "view", identifier, "--json", &requested_fields],
     )?;
     parse_detail(&output, fields)
 }
@@ -144,7 +174,7 @@ fn parse_detail(raw: &str, requested_fields: &[&str]) -> Result<GithubPullReques
                     name: (*name).into(),
                     value,
                 })
-                .ok_or_else(|| format!("GitHub response is missing pull request field `{name}`"))
+                .ok_or_else(|| format!("GitHub response is missing detail field `{name}`"))
         })
         .collect::<Result<_, _>>()?;
 
@@ -185,6 +215,21 @@ mod tests {
         );
         assert!(ISSUE_DETAIL_FIELDS.contains(&"subIssues"));
         assert!(ISSUE_DETAIL_FIELDS.contains(&"blockedBy"));
+    }
+
+    #[test]
+    fn requests_every_supported_release_field_once() {
+        assert_eq!(RELEASE_DETAIL_FIELDS.len(), 18);
+        assert_eq!(
+            RELEASE_DETAIL_FIELDS
+                .iter()
+                .copied()
+                .collect::<HashSet<_>>()
+                .len(),
+            RELEASE_DETAIL_FIELDS.len()
+        );
+        assert!(RELEASE_DETAIL_FIELDS.contains(&"assets"));
+        assert!(RELEASE_DETAIL_FIELDS.contains(&"isImmutable"));
     }
 
     #[test]

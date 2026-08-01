@@ -5,21 +5,27 @@ mod configuration;
 mod details;
 mod issues;
 mod overview;
+mod releases;
 mod repositories;
 
 use serde::{Deserialize, Serialize};
 
 pub use actions::{
-    cancel_run, check_default_branch_rules, create_release, download_release,
-    download_run_artifacts, rerun, run_log, run_workflow,
+    cancel_run, check_default_branch_rules, download_run_artifacts, rerun, run_log, run_workflow,
 };
 pub use collaboration::{create_pull_request, merge_pull_request, review_pull_request};
 pub use configuration::{
     delete_label, delete_secret, delete_variable, save_label, set_secret, set_variable,
 };
-pub use details::{GithubIssueDetail, GithubPullRequestDetail, issue_detail, pull_request_detail};
+pub use details::{
+    GithubIssueDetail, GithubPullRequestDetail, GithubReleaseDetail, issue_detail,
+    pull_request_detail, release_detail,
+};
 pub use issues::{GithubIssueEdit, close_issue, comment_issue, create_issue, edit_issue};
 pub use overview::{configuration, overview};
+pub use releases::{
+    GithubReleaseEdit, create_release, download_release, edit_release, upload_release_assets,
+};
 pub use repositories::{clone_repository, create_repository, fork_repository, sync_repository};
 
 #[derive(Serialize)]
