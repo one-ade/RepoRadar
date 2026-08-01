@@ -1,6 +1,8 @@
 use std::path::PathBuf;
 
-use crate::github::{self, GithubConfiguration, GithubOverview, GithubPullRequestDetail};
+use crate::github::{
+    self, GithubConfiguration, GithubIssueDetail, GithubOverview, GithubPullRequestDetail,
+};
 
 #[tauri::command]
 pub async fn get_github_overview(path: PathBuf) -> Result<GithubOverview, String> {
@@ -15,6 +17,13 @@ pub async fn get_pull_request_detail(
     number: u64,
 ) -> Result<GithubPullRequestDetail, String> {
     tauri::async_runtime::spawn_blocking(move || github::pull_request_detail(&path, number))
+        .await
+        .map_err(|error| error.to_string())?
+}
+
+#[tauri::command]
+pub async fn get_issue_detail(path: PathBuf, number: u64) -> Result<GithubIssueDetail, String> {
+    tauri::async_runtime::spawn_blocking(move || github::issue_detail(&path, number))
         .await
         .map_err(|error| error.to_string())?
 }

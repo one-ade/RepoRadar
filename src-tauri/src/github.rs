@@ -19,7 +19,7 @@ pub use collaboration::{
 pub use configuration::{
     delete_label, delete_secret, delete_variable, save_label, set_secret, set_variable,
 };
-pub use details::{GithubPullRequestDetail, pull_request_detail};
+pub use details::{GithubIssueDetail, GithubPullRequestDetail, issue_detail, pull_request_detail};
 pub use overview::{configuration, overview};
 pub use repositories::{clone_repository, create_repository, fork_repository, sync_repository};
 

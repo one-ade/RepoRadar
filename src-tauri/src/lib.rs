@@ -54,6 +54,7 @@ pub fn run() {
             commands::git::git_log,
             commands::github::get_github_overview,
             commands::github::get_pull_request_detail,
+            commands::github::get_issue_detail,
             commands::github::get_github_configuration,
             commands::github::set_github_variable,
             commands::github::delete_github_variable,
