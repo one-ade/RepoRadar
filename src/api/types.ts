@@ -213,3 +213,17 @@ export interface GithubConfiguration {
   secrets: Array<{ name: string; updatedAt: string }>;
   labels: Array<{ name: string; color: string | null; description: string | null }>;
 }
+
+export interface GithubEnvironment {
+  id: number;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  protectionRules: readonly GithubDetailValue[];
+  deploymentBranchPolicy: GithubDetailValue;
+}
+
+export interface GithubEnvironmentConfiguration {
+  variables: GithubConfiguration["variables"];
+  secrets: GithubConfiguration["secrets"];
+}

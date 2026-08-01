@@ -2,6 +2,8 @@ import { invoke } from "@tauri-apps/api/core";
 
 import type {
   GithubConfiguration,
+  GithubEnvironment,
+  GithubEnvironmentConfiguration,
   GithubIssueDetail,
   GithubIssueEdit,
   GithubOverview,
@@ -27,6 +29,52 @@ export function getIssueDetail(path: string, number: number): Promise<GithubIssu
 
 export function getGithubConfiguration(path: string): Promise<GithubConfiguration> {
   return invoke<GithubConfiguration>("get_github_configuration", { path });
+}
+
+export function getGithubEnvironments(path: string): Promise<GithubEnvironment[]> {
+  return invoke<GithubEnvironment[]>("get_github_environments", { path });
+}
+
+export function getGithubEnvironmentConfiguration(
+  path: string,
+  environment: string,
+): Promise<GithubEnvironmentConfiguration> {
+  return invoke<GithubEnvironmentConfiguration>("get_github_environment_configuration", {
+    path,
+    environment,
+  });
+}
+
+export function saveGithubEnvironment(path: string, name: string): Promise<void> {
+  return invoke("save_github_environment", { path, name });
+}
+
+export function deleteGithubEnvironment(path: string, name: string): Promise<void> {
+  return invoke("delete_github_environment", { path, name });
+}
+
+export function setGithubEnvironmentVariable(
+  path: string, environment: string, name: string, value: string,
+): Promise<void> {
+  return invoke("set_github_environment_variable", { path, environment, name, value });
+}
+
+export function deleteGithubEnvironmentVariable(
+  path: string, environment: string, name: string,
+): Promise<void> {
+  return invoke("delete_github_environment_variable", { path, environment, name });
+}
+
+export function setGithubEnvironmentSecret(
+  path: string, environment: string, name: string, value: string,
+): Promise<void> {
+  return invoke("set_github_environment_secret", { path, environment, name, value });
+}
+
+export function deleteGithubEnvironmentSecret(
+  path: string, environment: string, name: string,
+): Promise<void> {
+  return invoke("delete_github_environment_secret", { path, environment, name });
 }
 
 export function setGithubVariable(path: string, name: string, value: string): Promise<void> {

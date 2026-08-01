@@ -1115,6 +1115,29 @@ button:disabled {
   background: #0c0f14;
 }
 
+.github-environments > summary {
+  margin-bottom: 8px;
+  color: #d8dcea;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.github-environments > summary span {
+  margin-right: 8px;
+}
+
+.github-environments > summary small {
+  color: #687386;
+  font-size: 9px;
+  font-weight: 500;
+}
+
+.github-environment-values {
+  display: grid;
+  gap: 3px;
+}
+
 .github-configuration-heading {
   display: flex;
   align-items: center;
@@ -1680,6 +1703,10 @@ button:disabled {
   .github-release-compose,
   .github-config-compose {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .github-config-compose.compact {
+    grid-template-columns: minmax(100px, 0.7fr) minmax(140px, 1.3fr) auto;
   }
 }
 

@@ -82,7 +82,7 @@
 - [x] Repository Secret 和 Variable 查看、写入与删除（Secret 不回显）
 - [x] Repository Label 查看、创建、更新和删除
 - [x] 检查默认分支适用的 Ruleset
-- [ ] 部署环境
+- [x] 部署环境
 - [ ] Projects、Discussions 和 Codespaces
 - [ ] GitHub 搜索和全局工作台
 - [ ] 安全的高级 `gh` 命令面板

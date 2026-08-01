@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { GithubOverview, GithubPullRequest, GithubPullRequestDetail } from "../api";
 import GithubConfigurationPanel from "./GithubConfigurationPanel.vue";
+import GithubEnvironmentsPanel from "./GithubEnvironmentsPanel.vue";
 import GithubIssueWorkspace from "./GithubIssueWorkspace.vue";
 import GithubPullRequestDetailPanel from "./GithubPullRequestDetailPanel.vue";
 import GithubPullRequestSection from "./GithubPullRequestSection.vue";
@@ -158,6 +159,13 @@ const emit = defineEmits<{
     </div>
     <GithubConfigurationPanel
       :key="path"
+      :path="path"
+      :busy="busy"
+      :run-action="runAction"
+      @notice="emit('notice', $event)"
+    />
+    <GithubEnvironmentsPanel
+      :key="`environments-${path}`"
       :path="path"
       :busy="busy"
       :run-action="runAction"
