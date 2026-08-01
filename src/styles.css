@@ -1115,7 +1115,8 @@ button:disabled {
   background: #0c0f14;
 }
 
-.github-environments > summary {
+.github-environments > summary,
+.github-resources > summary {
   margin-bottom: 8px;
   color: #d8dcea;
   cursor: pointer;
@@ -1123,11 +1124,13 @@ button:disabled {
   font-weight: 700;
 }
 
-.github-environments > summary span {
+.github-environments > summary span,
+.github-resources > summary span {
   margin-right: 8px;
 }
 
-.github-environments > summary small {
+.github-environments > summary small,
+.github-resources > summary small {
   color: #687386;
   font-size: 9px;
   font-weight: 500;
@@ -1136,6 +1139,51 @@ button:disabled {
 .github-environment-values {
   display: grid;
   gap: 3px;
+}
+
+.github-resource-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.github-resource-filter {
+  width: 100%;
+  margin-bottom: 7px;
+  padding: 7px 9px;
+  border: 1px solid #2c3343;
+  border-radius: 7px;
+  outline: 0;
+  color: #dce0ea;
+  background: #0b0e14;
+  font-size: 10px;
+}
+
+.github-resources a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.github-resources a:hover {
+  color: #8e9aff;
+}
+
+.github-resource-wide {
+  grid-column: 1 / -1;
+}
+
+.github-resource-json {
+  max-height: 220px;
+  overflow: auto;
+  margin: 8px 0 0;
+  padding: 8px;
+  border-radius: 6px;
+  color: #aeb6c5;
+  background: #07090d;
+  font: 10px/1.45 "Cascadia Code", Consolas, monospace;
+  white-space: pre-wrap;
 }
 
 .github-configuration-heading {

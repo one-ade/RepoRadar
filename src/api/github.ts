@@ -8,8 +8,12 @@ import type {
   GithubIssueEdit,
   GithubOverview,
   GithubPullRequestDetail,
+  GithubProject,
   GithubReleaseDetail,
   GithubReleaseEdit,
+  GithubDiscussion,
+  GithubCodespace,
+  GithubDetailValue,
 } from "./types";
 
 export function getGithubOverview(path: string): Promise<GithubOverview> {
@@ -255,4 +259,36 @@ export function commentIssue(path: string, number: number, body: string): Promis
 
 export function closeIssue(path: string, number: number): Promise<void> {
   return invoke("close_issue", { path, number });
+}
+
+export function getGithubProjects(path: string): Promise<GithubProject[]> {
+  return invoke<GithubProject[]>("get_github_projects", { path });
+}
+
+export function getGithubProjectItems(
+  path: string, number: number, query = "",
+): Promise<GithubDetailValue> {
+  return invoke<GithubDetailValue>("get_github_project_items", { path, number, query });
+}
+
+export function getGithubDiscussions(path: string): Promise<GithubDiscussion[]> {
+  return invoke<GithubDiscussion[]>("get_github_discussions", { path });
+}
+
+export function getGithubCodespaces(path: string): Promise<GithubCodespace[]> {
+  return invoke<GithubCodespace[]>("get_github_codespaces", { path });
+}
+
+export function getGithubCodespaceLog(path: string, name: string): Promise<string> {
+  return invoke<string>("get_github_codespace_log", { path, name });
+}
+
+export function stopGithubCodespace(path: string, name: string): Promise<void> {
+  return invoke("stop_github_codespace", { path, name });
+}
+
+export function deleteGithubCodespace(
+  path: string, name: string, force: boolean,
+): Promise<void> {
+  return invoke("delete_github_codespace", { path, name, force });
 }

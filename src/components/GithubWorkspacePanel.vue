@@ -6,6 +6,7 @@ import GithubIssueWorkspace from "./GithubIssueWorkspace.vue";
 import GithubPullRequestDetailPanel from "./GithubPullRequestDetailPanel.vue";
 import GithubPullRequestSection from "./GithubPullRequestSection.vue";
 import GithubReleaseWorkspace from "./GithubReleaseWorkspace.vue";
+import GithubResourcesPanel from "./GithubResourcesPanel.vue";
 
 type RunAction = (action: () => Promise<void>, label?: string) => Promise<void>;
 
@@ -166,6 +167,13 @@ const emit = defineEmits<{
     />
     <GithubEnvironmentsPanel
       :key="`environments-${path}`"
+      :path="path"
+      :busy="busy"
+      :run-action="runAction"
+      @notice="emit('notice', $event)"
+    />
+    <GithubResourcesPanel
+      :key="`resources-${path}`"
       :path="path"
       :busy="busy"
       :run-action="runAction"

@@ -227,3 +227,41 @@ export interface GithubEnvironmentConfiguration {
   variables: GithubConfiguration["variables"];
   secrets: GithubConfiguration["secrets"];
 }
+
+export interface GithubProject {
+  number: number;
+  title: string;
+  url: string;
+  shortDescription: string;
+  public: boolean;
+  closed: boolean;
+  id: string;
+  items: { totalCount: number };
+  fields: { totalCount: number };
+}
+
+export interface GithubDiscussion {
+  id: string;
+  number: number;
+  title: string;
+  url: string;
+  createdAt: string;
+  updatedAt: string;
+  isAnswered: boolean;
+  answerChosenAt: string | null;
+  author: GithubAuthor | null;
+  category: { name: string };
+  comments: { totalCount: number };
+}
+
+export interface GithubCodespace {
+  name: string;
+  displayName: string;
+  state: string;
+  machineName: string;
+  createdAt: string;
+  lastUsedAt: string;
+  repository: GithubDetailValue;
+  gitStatus: GithubDetailValue;
+  owner: GithubDetailValue;
+}

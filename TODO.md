@@ -83,7 +83,7 @@
 - [x] Repository Label 查看、创建、更新和删除
 - [x] 检查默认分支适用的 Ruleset
 - [x] 部署环境
-- [ ] Projects、Discussions 和 Codespaces
+- [x] Projects、Discussions 和 Codespaces
 - [ ] GitHub 搜索和全局工作台
 - [ ] 安全的高级 `gh` 命令面板
 - [ ] `gh api` 请求构造器
