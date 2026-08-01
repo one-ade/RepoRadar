@@ -37,11 +37,11 @@ gh pr view <number> --json <46 个字段> -R <host/owner/repo>
 
 ## 前端设计
 
-新增独立 `GithubPullRequestDetailPanel.vue`，避免继续扩大现有 GitHub 工作台组件。面板接收详情、busy 状态和关闭事件，只负责展示。
+新增 `GithubPullRequestSection.vue` 承接现有 PR 列表与动作，新增 `GithubPullRequestDetailPanel.vue` 专门展示全字段详情，避免继续扩大现有 GitHub 工作台组件。
 
-`useGithubWorkspace` 新增当前 PR 详情状态与加载动作。选择详情时先清空旧值，再通过现有 `runProjectAction` 调用 IPC。切换项目、刷新 GitHub 概览、Review 或合并完成后清空详情，避免显示过期状态。
+新增 `usePullRequestDetail` 管理当前详情与加载动作，避免让已处于文件规模预警带的 `useGithubWorkspace` 继续增长。选择详情时先清空旧值，再通过现有 `runProjectAction` 调用 IPC；监听项目和 GitHub 概览变化并清空详情，因此切换项目、刷新、Review 或合并后不会显示过期状态。
 
-`GithubWorkspacePanel.vue` 只增加“详情”事件和详情面板插槽数据，不承担字段格式化逻辑。根组件继续只负责连线。
+`GithubWorkspacePanel.vue` 用新的 PR 区块组件替换原有内联列表。根组件只连接详情 composable 与工作台，保持在 250 个有效行以内。
 
 ## 分组
 
