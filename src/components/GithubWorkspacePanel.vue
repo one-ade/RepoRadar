@@ -7,6 +7,7 @@ import GithubPullRequestDetailPanel from "./GithubPullRequestDetailPanel.vue";
 import GithubPullRequestSection from "./GithubPullRequestSection.vue";
 import GithubReleaseWorkspace from "./GithubReleaseWorkspace.vue";
 import GithubResourcesPanel from "./GithubResourcesPanel.vue";
+import GithubSearchPanel from "./GithubSearchPanel.vue";
 
 type RunAction = (action: () => Promise<void>, label?: string) => Promise<void>;
 
@@ -178,6 +179,12 @@ const emit = defineEmits<{
       :busy="busy"
       :run-action="runAction"
       @notice="emit('notice', $event)"
+    />
+    <GithubSearchPanel
+      :key="`search-${path}`"
+      :path="path"
+      :busy="busy"
+      :run-action="runAction"
     />
     <input
       v-model="githubComment"

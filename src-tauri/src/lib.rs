@@ -88,6 +88,7 @@ pub fn run() {
             commands::github_resources::get_github_codespace_log,
             commands::github_resources::stop_github_codespace,
             commands::github_resources::delete_github_codespace,
+            commands::github_resources::search_github,
             commands::github::fork_github_repository,
             commands::github::sync_github_repository,
             commands::github::clone_github_repository,

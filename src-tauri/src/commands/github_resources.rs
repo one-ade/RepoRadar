@@ -58,3 +58,17 @@ pub async fn delete_github_codespace(
         .await
         .map_err(|error| error.to_string())?
 }
+
+#[tauri::command]
+pub async fn search_github(
+    path: PathBuf,
+    kind: String,
+    query: String,
+    current_repository: bool,
+) -> Result<Vec<serde_json::Value>, String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        github::search(&path, &kind, &query, current_repository)
+    })
+    .await
+    .map_err(|error| error.to_string())?
+}

@@ -84,7 +84,7 @@
 - [x] 检查默认分支适用的 Ruleset
 - [x] 部署环境
 - [x] Projects、Discussions 和 Codespaces
-- [ ] GitHub 搜索和全局工作台
+- [x] GitHub 搜索和全局工作台
 - [ ] 安全的高级 `gh` 命令面板
 - [ ] `gh api` 请求构造器
 - [x] GitHub Enterprise Server Remote 解析与多 Host 认证状态

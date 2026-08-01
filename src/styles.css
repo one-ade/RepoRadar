@@ -1116,7 +1116,8 @@ button:disabled {
 }
 
 .github-environments > summary,
-.github-resources > summary {
+.github-resources > summary,
+.github-search > summary {
   margin-bottom: 8px;
   color: #d8dcea;
   cursor: pointer;
@@ -1125,12 +1126,14 @@ button:disabled {
 }
 
 .github-environments > summary span,
-.github-resources > summary span {
+.github-resources > summary span,
+.github-search > summary span {
   margin-right: 8px;
 }
 
 .github-environments > summary small,
-.github-resources > summary small {
+.github-resources > summary small,
+.github-search > summary small {
   color: #687386;
   font-size: 9px;
   font-weight: 500;
@@ -1182,6 +1185,63 @@ button:disabled {
   border-radius: 6px;
   color: #aeb6c5;
   background: #07090d;
+  font: 10px/1.45 "Cascadia Code", Consolas, monospace;
+  white-space: pre-wrap;
+}
+
+.github-search-form {
+  display: grid;
+  grid-template-columns: 130px minmax(180px, 1fr) auto auto;
+  align-items: center;
+  gap: 7px;
+}
+
+.github-search-form select,
+.github-search-form input:not([type="checkbox"]) {
+  min-width: 0;
+  padding: 7px 9px;
+  border: 1px solid #2c3343;
+  border-radius: 7px;
+  outline: 0;
+  color: #dce0ea;
+  background: #0b0e14;
+  font-size: 10px;
+}
+
+.github-search-form label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #788296;
+  font-size: 10px;
+}
+
+.github-search-results {
+  display: grid;
+  gap: 6px;
+  margin-top: 9px;
+}
+
+.github-search-results details {
+  padding: 8px;
+  border: 1px solid #222834;
+  border-radius: 7px;
+  background: #0a0d12;
+}
+
+.github-search-results summary,
+.github-search-results a {
+  color: #aeb6ff;
+  cursor: pointer;
+  font-size: 10px;
+  text-decoration: none;
+}
+
+.github-search-results pre {
+  max-height: 240px;
+  overflow: auto;
+  margin: 7px 0 0;
+  color: #aeb6c5;
   font: 10px/1.45 "Cascadia Code", Consolas, monospace;
   white-space: pre-wrap;
 }
@@ -1755,6 +1815,10 @@ button:disabled {
 
   .github-config-compose.compact {
     grid-template-columns: minmax(100px, 0.7fr) minmax(140px, 1.3fr) auto;
+  }
+
+  .github-search-form {
+    grid-template-columns: 130px minmax(0, 1fr);
   }
 }
 

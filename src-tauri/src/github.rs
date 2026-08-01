@@ -9,6 +9,7 @@ mod overview;
 mod releases;
 mod repositories;
 mod resources;
+mod search;
 
 use serde::{Deserialize, Serialize};
 
@@ -39,6 +40,7 @@ pub use resources::{
     GithubCodespace, GithubDiscussion, GithubProject, codespace_log, codespaces, delete_codespace,
     discussions, project_items, projects, stop_codespace,
 };
+pub use search::search;
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]

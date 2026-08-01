@@ -292,3 +292,17 @@ export function deleteGithubCodespace(
 ): Promise<void> {
   return invoke("delete_github_codespace", { path, name, force });
 }
+
+export function searchGithub(
+  path: string,
+  kind: "code" | "commits" | "issues" | "prs" | "repos",
+  query: string,
+  currentRepository = false,
+): Promise<GithubDetailValue[]> {
+  return invoke<GithubDetailValue[]>("search_github", {
+    path,
+    kind,
+    query,
+    currentRepository,
+  });
+}
