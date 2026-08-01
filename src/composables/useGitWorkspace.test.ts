@@ -41,6 +41,7 @@ describe("useGitWorkspace", () => {
       name: "repo",
       path: "D:/repo",
       favorite: false,
+      tags: [],
       lastSeenAt: "now",
     });
     const runAction = vi.fn(async (action: () => Promise<void>) => action());

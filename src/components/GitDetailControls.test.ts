@@ -9,6 +9,7 @@ const props = {
     name: "RepoRadar",
     path: "D:/RepoRadar",
     favorite: false,
+    tags: [],
     lastSeenAt: "now",
   },
   status: {

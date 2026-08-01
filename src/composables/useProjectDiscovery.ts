@@ -10,6 +10,7 @@ import {
   listProjects,
   scanProjects,
   setProjectFavorite,
+  setProjectTags,
   type EnvironmentStatus,
   type Project,
   type ScanProgress,
@@ -110,6 +111,17 @@ export function useProjectDiscovery(
     });
   }
 
+  async function updateTags(project: Project, tags: string[]) {
+    let saved = false;
+    await runAction(async () => {
+      const updated = await setProjectTags(project.id, tags);
+      projects.value = projects.value.map((item) => (item.id === updated.id ? updated : item));
+      if (selectedProject.value?.id === updated.id) selectedProject.value = updated;
+      saved = true;
+    }, "更新项目标签");
+    return saved;
+  }
+
   return {
     environment,
     projects,
@@ -124,5 +136,6 @@ export function useProjectDiscovery(
     rescan,
     stopScan,
     toggleFavorite,
+    updateTags,
   };
 }

@@ -9,6 +9,7 @@ const api = vi.hoisted(() => ({
   listProjects: vi.fn(),
   scanProjects: vi.fn(),
   setProjectFavorite: vi.fn(),
+  setProjectTags: vi.fn(),
 }));
 const dialog = vi.hoisted(() => ({ confirm: vi.fn() }));
 
@@ -52,5 +53,30 @@ describe("useProjectDiscovery", () => {
     expect(api.addProject).toHaveBeenCalledWith("D:/new-repo", true);
     expect(runAction).toHaveBeenCalledTimes(1);
     expect(notify).toHaveBeenCalledWith("已添加 new-repo");
+  });
+
+  it("updates tags through one project action", async () => {
+    const project = {
+      id: 1,
+      path: "D:/new-repo",
+      name: "new-repo",
+      favorite: false,
+      tags: [],
+      lastSeenAt: "now",
+    };
+    const updated = { ...project, tags: ["rust"] };
+    const runAction = vi.fn(async (action: () => Promise<void>) => action());
+    api.setProjectTags.mockResolvedValue(updated);
+    const discovery = useProjectDiscovery(runAction, vi.fn(), vi.fn(), vi.fn());
+    discovery.projects.value = [project];
+    discovery.selectedProject.value = project;
+
+    const saved = await discovery.updateTags(project, ["rust"]);
+
+    expect(saved).toBe(true);
+    expect(api.setProjectTags).toHaveBeenCalledWith(project.id, ["rust"]);
+    expect(discovery.projects.value[0]).toEqual(updated);
+    expect(discovery.selectedProject.value).toEqual(updated);
+    expect(runAction).toHaveBeenCalledTimes(1);
   });
 });

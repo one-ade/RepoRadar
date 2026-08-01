@@ -29,3 +29,7 @@ export function cancelScan(): Promise<void> {
 export function setProjectFavorite(id: number, favorite: boolean): Promise<void> {
   return invoke<void>("set_project_favorite", { id, favorite });
 }
+
+export function setProjectTags(id: number, tags: string[]): Promise<Project> {
+  return invoke<Project>("set_project_tags", { id, tags });
+}

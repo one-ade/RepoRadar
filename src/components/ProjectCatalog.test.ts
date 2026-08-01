@@ -9,6 +9,7 @@ const project: Project = {
   name: "RepoRadar",
   path: "D:/dev-code/RepoRadar",
   favorite: false,
+  tags: [],
   lastSeenAt: "2026-07-30",
 };
 

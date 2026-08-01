@@ -83,7 +83,8 @@ const filteredProjects = computed(() => {
   return projects.value.filter(
     (project) =>
       project.name.toLocaleLowerCase().includes(query) ||
-      project.path.toLocaleLowerCase().includes(query),
+      project.path.toLocaleLowerCase().includes(query) ||
+      project.tags.some((tag) => tag.toLocaleLowerCase().includes(query)),
   );
 });
 

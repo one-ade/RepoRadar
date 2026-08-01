@@ -26,6 +26,7 @@ export interface Project {
   path: string;
   name: string;
   favorite: boolean;
+  tags: string[];
   lastSeenAt: string;
 }
 
