@@ -78,6 +78,7 @@ pub fn run() {
             commands::github::review_pull_request,
             commands::github::merge_pull_request,
             commands::github::create_issue,
+            commands::github::edit_issue,
             commands::github::comment_issue,
             commands::github::close_issue
         ])

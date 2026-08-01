@@ -1,7 +1,8 @@
 use std::path::PathBuf;
 
 use crate::github::{
-    self, GithubConfiguration, GithubIssueDetail, GithubOverview, GithubPullRequestDetail,
+    self, GithubConfiguration, GithubIssueDetail, GithubIssueEdit, GithubOverview,
+    GithubPullRequestDetail,
 };
 
 #[tauri::command]
@@ -246,6 +247,13 @@ pub async fn merge_pull_request(
 #[tauri::command]
 pub async fn create_issue(path: PathBuf, title: String, body: String) -> Result<String, String> {
     tauri::async_runtime::spawn_blocking(move || github::create_issue(&path, &title, &body))
+        .await
+        .map_err(|error| error.to_string())?
+}
+
+#[tauri::command]
+pub async fn edit_issue(path: PathBuf, number: u64, edit: GithubIssueEdit) -> Result<(), String> {
+    tauri::async_runtime::spawn_blocking(move || github::edit_issue(&path, number, &edit))
         .await
         .map_err(|error| error.to_string())?
 }
