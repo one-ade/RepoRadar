@@ -1,10 +1,20 @@
 use std::path::PathBuf;
 
-use crate::github::{self, GithubConfiguration, GithubOverview};
+use crate::github::{self, GithubConfiguration, GithubOverview, GithubPullRequestDetail};
 
 #[tauri::command]
 pub async fn get_github_overview(path: PathBuf) -> Result<GithubOverview, String> {
     tauri::async_runtime::spawn_blocking(move || github::overview(&path))
+        .await
+        .map_err(|error| error.to_string())?
+}
+
+#[tauri::command]
+pub async fn get_pull_request_detail(
+    path: PathBuf,
+    number: u64,
+) -> Result<GithubPullRequestDetail, String> {
+    tauri::async_runtime::spawn_blocking(move || github::pull_request_detail(&path, number))
         .await
         .map_err(|error| error.to_string())?
 }
