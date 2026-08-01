@@ -1,9 +1,20 @@
 import { invoke } from "@tauri-apps/api/core";
 
-import type { GithubConfiguration, GithubOverview } from "./types";
+import type {
+  GithubConfiguration,
+  GithubOverview,
+  GithubPullRequestDetail,
+} from "./types";
 
 export function getGithubOverview(path: string): Promise<GithubOverview> {
   return invoke<GithubOverview>("get_github_overview", { path });
+}
+
+export function getPullRequestDetail(
+  path: string,
+  number: number,
+): Promise<GithubPullRequestDetail> {
+  return invoke<GithubPullRequestDetail>("get_pull_request_detail", { path, number });
 }
 
 export function getGithubConfiguration(path: string): Promise<GithubConfiguration> {

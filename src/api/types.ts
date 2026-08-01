@@ -103,6 +103,23 @@ export interface GithubPullRequest {
   url: string;
 }
 
+export type GithubDetailValue =
+  | null
+  | boolean
+  | number
+  | string
+  | readonly GithubDetailValue[]
+  | { readonly [key: string]: GithubDetailValue };
+
+export interface GithubDetailField {
+  readonly name: string;
+  readonly value: GithubDetailValue;
+}
+
+export interface GithubPullRequestDetail {
+  readonly fields: readonly GithubDetailField[];
+}
+
 export interface GithubIssue {
   number: number;
   title: string;
