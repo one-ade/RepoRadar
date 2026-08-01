@@ -38,6 +38,7 @@ pub fn run() {
             commands::projects::scan_projects,
             commands::projects::cancel_scan,
             commands::projects::set_project_favorite,
+            commands::projects::set_project_tags,
             commands::git::get_git_status,
             commands::git::stage_all,
             commands::git::unstage_all,

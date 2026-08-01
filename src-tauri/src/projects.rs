@@ -18,6 +18,7 @@ pub struct Project {
     pub path: String,
     pub name: String,
     pub favorite: bool,
+    pub tags: Vec<String>,
     pub last_seen_at: String,
 }
 

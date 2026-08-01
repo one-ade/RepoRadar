@@ -106,3 +106,15 @@ pub async fn set_project_favorite(
         .await
         .map_err(|error| error.to_string())?
 }
+
+#[tauri::command]
+pub async fn set_project_tags(
+    database: State<'_, Arc<Database>>,
+    id: i64,
+    tags: Vec<String>,
+) -> Result<Project, String> {
+    let database = Arc::clone(database.inner());
+    tauri::async_runtime::spawn_blocking(move || database.set_project_tags(id, tags))
+        .await
+        .map_err(|error| error.to_string())?
+}
