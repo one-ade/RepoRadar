@@ -3,6 +3,7 @@ mod client;
 mod collaboration;
 mod configuration;
 mod details;
+mod environments;
 mod issues;
 mod overview;
 mod releases;
@@ -15,11 +16,17 @@ pub use actions::{
 };
 pub use collaboration::{create_pull_request, merge_pull_request, review_pull_request};
 pub use configuration::{
-    delete_label, delete_secret, delete_variable, save_label, set_secret, set_variable,
+    delete_environment_secret, delete_environment_variable, delete_label, delete_secret,
+    delete_variable, save_label, set_environment_secret, set_environment_variable, set_secret,
+    set_variable,
 };
 pub use details::{
     GithubIssueDetail, GithubPullRequestDetail, GithubReleaseDetail, issue_detail,
     pull_request_detail, release_detail,
+};
+pub use environments::{
+    GithubEnvironment, GithubEnvironmentConfiguration, delete_environment,
+    environment_configuration, environments, save_environment,
 };
 pub use issues::{GithubIssueEdit, close_issue, comment_issue, create_issue, edit_issue};
 pub use overview::{configuration, overview};
