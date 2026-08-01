@@ -45,6 +45,7 @@ const api = vi.hoisted(() => {
     downloadGithubRelease: fn(),
     forkGithubRepository: fn(),
     getGithubOverview: fn(),
+    getPullRequestDetail: fn(),
     getGithubRunLog: fn(),
     mergePullRequest: fn(),
     rerunGithubRun: fn(),

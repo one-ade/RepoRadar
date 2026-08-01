@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import type { GithubOverview } from "../api";
+import type { GithubOverview, GithubPullRequest, GithubPullRequestDetail } from "../api";
 import GithubConfigurationPanel from "./GithubConfigurationPanel.vue";
+import GithubPullRequestDetailPanel from "./GithubPullRequestDetailPanel.vue";
+import GithubPullRequestSection from "./GithubPullRequestSection.vue";
 
 type RunAction = (action: () => Promise<void>, label?: string) => Promise<void>;
 
@@ -8,6 +10,8 @@ defineProps<{
   path: string;
   busy: boolean;
   overview: GithubOverview | null;
+  selectedPullRequest: GithubPullRequest | null;
+  pullRequestDetail: GithubPullRequestDetail | null;
   runLog: string;
   runAction: RunAction;
 }>();
@@ -37,6 +41,8 @@ const emit = defineEmits<{
   "create-release": [];
   review: [number: number, action: "approve" | "comment" | "request-changes"];
   merge: [number: number];
+  "view-pull-request": [pullRequest: GithubPullRequest];
+  "close-pull-request": [];
   "comment-issue": [number: number];
   "close-issue": [number: number];
   "dispatch-workflow": [workflowId: number];
@@ -161,18 +167,13 @@ const emit = defineEmits<{
       aria-label="GitHub 评论"
     />
     <div class="github-columns">
-      <section>
-        <h4>Pull Requests · {{ overview.pullRequests.length }}</h4>
-        <div v-for="item in overview.pullRequests.slice(0, 5)" :key="item.number" class="github-row">
-          <span>#{{ item.number }}</span>
-          <strong>{{ item.title }}</strong>
-          <div class="github-row-actions">
-            <button :disabled="busy" @click="emit('review', item.number, 'comment')">评论</button>
-            <button :disabled="busy" @click="emit('review', item.number, 'approve')">批准</button>
-            <button :disabled="busy || item.isDraft" @click="emit('merge', item.number)">合并</button>
-          </div>
-        </div>
-      </section>
+      <GithubPullRequestSection
+        :pull-requests="overview.pullRequests"
+        :busy="busy"
+        @view="emit('view-pull-request', $event)"
+        @review="(number, action) => emit('review', number, action)"
+        @merge="emit('merge', $event)"
+      />
       <section>
         <h4>Issues · {{ overview.issues.length }}</h4>
         <div v-for="item in overview.issues.slice(0, 5)" :key="item.number" class="github-row">
@@ -229,6 +230,12 @@ const emit = defineEmits<{
         </div>
       </section>
     </div>
+    <GithubPullRequestDetailPanel
+      v-if="selectedPullRequest"
+      :pull-request="selectedPullRequest"
+      :detail="pullRequestDetail"
+      @close="emit('close-pull-request')"
+    />
     <pre v-if="runLog" class="github-log">{{ runLog }}</pre>
   </div>
 </template>

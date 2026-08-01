@@ -1232,6 +1232,110 @@ button:disabled {
   white-space: nowrap;
 }
 
+.github-pr-detail {
+  margin-top: 10px;
+  padding: 14px;
+  border: 1px solid #2b3242;
+  border-radius: 10px;
+  background: linear-gradient(145deg, #10141d, #0b0e14);
+}
+
+.github-pr-detail > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.github-pr-detail h4 {
+  margin: 5px 0 3px;
+  color: #d8dcea;
+  font-size: 14px;
+}
+
+.github-pr-detail header p,
+.github-pr-detail-loading {
+  margin: 0;
+  color: #737c8d;
+  font-size: 10px;
+}
+
+.github-pr-detail-close {
+  padding: 0 5px;
+  border: 0;
+  color: #7e8798;
+  background: transparent;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.github-pr-detail-groups {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.github-pr-detail-groups > section {
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid #222834;
+  border-radius: 8px;
+  background: #0a0d12;
+}
+
+.github-pr-detail-groups h5 {
+  margin: 0 0 8px;
+  color: #8e9aff;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+}
+
+.github-pr-detail-groups dl {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+}
+
+.github-pr-detail-field {
+  display: grid;
+  grid-template-columns: minmax(105px, 0.4fr) minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+}
+
+.github-pr-detail-field dt {
+  overflow-wrap: anywhere;
+  color: #687386;
+  font-size: 10px;
+}
+
+.github-pr-detail-field dd {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: #bcc3d2;
+  font-size: 10px;
+  white-space: pre-wrap;
+}
+
+.github-pr-detail-field summary {
+  color: #8e9aff;
+  cursor: pointer;
+}
+
+.github-pr-detail-field pre {
+  max-height: 240px;
+  overflow: auto;
+  margin: 7px 0 0;
+  padding: 8px;
+  border-radius: 6px;
+  color: #aeb6c5;
+  background: #07090d;
+  font: 10px/1.45 "Cascadia Code", Consolas, monospace;
+  white-space: pre-wrap;
+}
+
 .diff-panel pre {
   overflow: auto;
   margin: 0;
@@ -1469,6 +1573,10 @@ button:disabled {
   }
 
   .github-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .github-pr-detail-groups {
     grid-template-columns: 1fr;
   }
 

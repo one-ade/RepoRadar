@@ -15,6 +15,7 @@ import ProjectRoadmap from "./components/ProjectRoadmap.vue";
 import ScanProgressBanner from "./components/ScanProgressBanner.vue";
 import { useGitWorkspace } from "./composables/useGitWorkspace";
 import { useGithubWorkspace } from "./composables/useGithubWorkspace";
+import { usePullRequestDetail } from "./composables/usePullRequestDetail";
 import { useOperations } from "./composables/useOperations";
 import { useProjectDiscovery } from "./composables/useProjectDiscovery";
 import { type Project, type ScanProgress } from "./api";
@@ -26,15 +27,13 @@ const searchQuery = ref("");
 const activeSection = ref<"overview" | "projects">("overview");
 const mainContent = ref<HTMLElement | null>(null);
 const showOperations = ref(false);
-const {
-  operations, activeOperationCount, beginOperation, finishOperation, clearOperations,
-} = useOperations();
+const { operations, activeOperationCount, beginOperation, finishOperation, clearOperations } =
+  useOperations();
 const {
   environment, projects, selectedProject, loading, scanning, scanProgress,
   refreshEnvironment, refreshProjects, chooseProject, chooseScanRoot,
   rescan, stopScan, toggleFavorite, updateTags,
-} = useProjectDiscovery(
-  runProjectAction, chooseDirectory,
+} = useProjectDiscovery(runProjectAction, chooseDirectory,
   (message) => { notice.value = message; },
   (message) => { error.value = message; },
 );
@@ -51,6 +50,8 @@ const {
   selectedProject, runProjectAction, chooseDirectory,
   (message) => { notice.value = message; },
 );
+const { selectedPullRequest, pullRequestDetail, viewPullRequest, clearPullRequest } =
+  usePullRequestDetail(selectedProject, githubOverview, runProjectAction);
 const {
   gitStatus, gitDiff, branches, history, commitMessage, newBranch, detailTab,
   resetGit, loadProject, selectDetailTab, stageProject, unstageProject,
@@ -237,6 +238,8 @@ onUnmounted(() => stopScanProgress?.());
               :path="selectedProject.path"
               :busy="projectBusy"
               :overview="githubOverview"
+              :selected-pull-request="selectedPullRequest"
+              :pull-request-detail="pullRequestDetail"
               :run-log="githubRunLog"
               :run-action="runProjectAction"
               @clone="cloneGithubRepositoryItem"
@@ -247,6 +250,8 @@ onUnmounted(() => stopScanProgress?.());
               @create-release="createGithubReleaseItem"
               @review="reviewGithubPullRequest"
               @merge="mergeGithubPullRequest"
+              @view-pull-request="viewPullRequest"
+              @close-pull-request="clearPullRequest"
               @comment-issue="commentGithubIssue"
               @close-issue="closeGithubIssue"
               @dispatch-workflow="dispatchGithubWorkflow"

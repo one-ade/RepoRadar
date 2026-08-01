@@ -21,6 +21,18 @@ const overview: GithubOverview = {
   releases: [],
 };
 
+const pullRequest = {
+  number: 7,
+  title: "Details",
+  state: "OPEN",
+  author: { login: "octocat" },
+  headRefName: "feature",
+  baseRefName: "main",
+  isDraft: false,
+  updatedAt: "now",
+  url: "https://github.com/acme/repo/pull/7",
+};
+
 const baseProps = {
   path: "D:/repo",
   busy: false,
@@ -36,6 +48,8 @@ const baseProps = {
   repositoryName: "",
   repositoryVisibility: "private" as const,
   repositoryDescription: "",
+  selectedPullRequest: null,
+  pullRequestDetail: null,
 };
 
 describe("GithubWorkspacePanel", () => {
@@ -50,7 +64,7 @@ describe("GithubWorkspacePanel", () => {
 
   it("emits explicit GitHub actions from the loaded workspace", async () => {
     const wrapper = mount(GithubWorkspacePanel, {
-      props: { ...baseProps, overview },
+      props: { ...baseProps, overview: { ...overview, pullRequests: [pullRequest] } },
       global: {
         stubs: { GithubConfigurationPanel: true },
       },
@@ -60,8 +74,10 @@ describe("GithubWorkspacePanel", () => {
       .findAll("button")
       .find((button) => button.text() === "创建 Issue");
     await createIssue!.trigger("click");
+    await wrapper.get('[data-action="view-pr"]').trigger("click");
 
     expect(wrapper.text()).toContain("acme/repo");
     expect(wrapper.emitted("create-item")?.[0]).toEqual(["issue"]);
+    expect(wrapper.emitted("view-pull-request")?.[0]).toEqual([pullRequest]);
   });
 });

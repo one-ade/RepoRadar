@@ -62,7 +62,7 @@
 - [x] GitHub 多 Host 认证状态（不展示 Token）
 - [x] Repository 查看、创建、克隆、Fork 和同步
 - [x] Pull Request 列表、创建、Review 和合并
-- [ ] Pull Request 详情
+- [x] Pull Request 详情
 - [x] Issue 列表、创建、评论和关闭
 - [ ] Issue 详情与编辑
 - [x] Actions Workflow、Run、日志和 Artifact
