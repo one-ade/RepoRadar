@@ -32,7 +32,7 @@ const {
 const {
   environment, projects, selectedProject, loading, scanning, scanProgress,
   refreshEnvironment, refreshProjects, chooseProject, chooseScanRoot,
-  rescan, stopScan, toggleFavorite,
+  rescan, stopScan, toggleFavorite, updateTags,
 } = useProjectDiscovery(
   runProjectAction, chooseDirectory,
   (message) => { notice.value = message; },
@@ -193,6 +193,7 @@ onUnmounted(() => stopScanProgress?.());
             :visible-projects="filteredProjects"
             :selected-id="selectedProject?.id"
             :busy="projectBusy"
+            :save-tags="updateTags"
             @rescan="rescan"
             @select="selectProject"
             @favorite="toggleFavorite"

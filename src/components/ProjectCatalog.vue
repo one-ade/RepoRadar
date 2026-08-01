@@ -1,12 +1,34 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import type { Project } from "../api";
 
-defineProps<{
+const props = defineProps<{
   projects: Project[];
   visibleProjects: Project[];
   selectedId?: number;
   busy: boolean;
+  saveTags: (project: Project, tags: string[]) => Promise<boolean>;
 }>();
+
+const editingId = ref<number>();
+const tagDraft = ref("");
+
+function editTags(project: Project) {
+  editingId.value = project.id;
+  tagDraft.value = project.tags.join(", ");
+}
+
+function cancelTagEdit() {
+  editingId.value = undefined;
+}
+
+async function submitTags(project: Project) {
+  const tags = tagDraft.value
+    .split(/[,，]/)
+    .map((tag) => tag.trim())
+    .filter(Boolean);
+  if (await props.saveTags(project, tags)) cancelTagEdit();
+}
 
 const emit = defineEmits<{
   rescan: [];
@@ -48,17 +70,44 @@ const emit = defineEmits<{
         <span class="project-copy">
           <strong>{{ project.name }}</strong>
           <small>{{ project.path }}</small>
+          <span v-if="project.tags.length" class="project-tags">
+            <span v-for="tag in project.tags" :key="tag" class="project-tag">{{ tag }}</span>
+          </span>
         </span>
         <span class="tracked-label">已跟踪</span>
       </button>
-      <button
-        :class="['favorite-toggle', project.favorite && 'favorite']"
-        :aria-label="project.favorite ? '取消收藏' : '收藏项目'"
-        :disabled="busy"
-        @click.stop="emit('favorite', project)"
-      >
-        {{ project.favorite ? "★" : "☆" }}
-      </button>
+      <span class="project-actions">
+        <button
+          class="small-action tag-edit"
+          :aria-label="`编辑 ${project.name} 标签`"
+          :disabled="busy"
+          @click="editTags(project)"
+        >
+          标签
+        </button>
+        <button
+          :class="['favorite-toggle', project.favorite && 'favorite']"
+          :aria-label="project.favorite ? '取消收藏' : '收藏项目'"
+          :disabled="busy"
+          @click.stop="emit('favorite', project)"
+        >
+          {{ project.favorite ? "★" : "☆" }}
+        </button>
+      </span>
+      <form v-if="editingId === project.id" class="tag-editor" @submit.prevent="submitTags(project)">
+        <input
+          v-model="tagDraft"
+          aria-label="项目标签"
+          maxlength="167"
+          placeholder="rust, frontend, client"
+          :disabled="busy"
+        />
+        <button class="small-action commit-action" :disabled="busy" type="submit">保存</button>
+        <button class="small-action tag-cancel" :disabled="busy" type="button" @click="cancelTagEdit">
+          取消
+        </button>
+        <small class="tag-hint">最多 8 个标签，每个不超过 20 个字符，以逗号分隔</small>
+      </form>
     </div>
   </div>
 

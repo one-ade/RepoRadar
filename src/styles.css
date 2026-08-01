@@ -765,6 +765,48 @@ button:disabled {
   min-width: 0;
 }
 
+.project-tags,
+.project-actions {
+  display: flex;
+  align-items: center;
+}
+
+.project-tags {
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.project-tag {
+  padding: 2px 6px;
+  border: 1px solid #303859;
+  border-radius: 999px;
+  color: #aeb6ff;
+  background: #1c2239;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: 9px;
+}
+
+.project-actions {
+  gap: 5px;
+}
+
+.tag-editor {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 6px;
+  align-items: center;
+  padding-top: 8px;
+  border-top: 1px solid #222834;
+}
+
+.project-row .tag-hint {
+  grid-column: 1 / -1;
+  color: #606a7c;
+  white-space: normal;
+}
+
 .project-row.selected {
   border-color: #4d5bd1;
   background: #151a2b;
@@ -921,7 +963,8 @@ button:disabled {
   background: #5666e9;
 }
 
-.git-actions input {
+.git-actions input,
+.tag-editor input {
   min-width: 130px;
   flex: 1;
   padding: 7px 9px;
