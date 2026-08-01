@@ -53,6 +53,8 @@ pub fn run() {
             commands::git::delete_branch,
             commands::git::git_log,
             commands::github::get_github_overview,
+            commands::github_advanced::run_safe_github_command,
+            commands::github_advanced::run_github_api_request,
             commands::github::get_pull_request_detail,
             commands::github::get_issue_detail,
             commands::github_releases::get_release_detail,

@@ -1,4 +1,5 @@
 mod actions;
+mod advanced;
 mod client;
 mod collaboration;
 mod configuration;
@@ -16,6 +17,7 @@ use serde::{Deserialize, Serialize};
 pub use actions::{
     cancel_run, check_default_branch_rules, download_run_artifacts, rerun, run_log, run_workflow,
 };
+pub use advanced::{GithubApiField, api_request, safe_command};
 pub use collaboration::{create_pull_request, merge_pull_request, review_pull_request};
 pub use configuration::{
     delete_environment_secret, delete_environment_variable, delete_label, delete_secret,

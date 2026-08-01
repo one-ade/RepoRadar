@@ -306,3 +306,18 @@ export function searchGithub(
     currentRepository,
   });
 }
+
+export function runSafeGithubCommand(
+  path: string, command: string, extraArgs: readonly string[],
+): Promise<string> {
+  return invoke<string>("run_safe_github_command", { path, command, extraArgs });
+}
+
+export function runGithubApiRequest(
+  path: string,
+  method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE",
+  endpoint: string,
+  fields: readonly { key: string; value: string }[],
+): Promise<string> {
+  return invoke<string>("run_github_api_request", { path, method, endpoint, fields });
+}

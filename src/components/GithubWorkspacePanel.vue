@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { GithubOverview, GithubPullRequest, GithubPullRequestDetail } from "../api";
 import GithubConfigurationPanel from "./GithubConfigurationPanel.vue";
+import GithubAdvancedPanel from "./GithubAdvancedPanel.vue";
 import GithubEnvironmentsPanel from "./GithubEnvironmentsPanel.vue";
 import GithubIssueWorkspace from "./GithubIssueWorkspace.vue";
 import GithubPullRequestDetailPanel from "./GithubPullRequestDetailPanel.vue";
@@ -186,6 +187,7 @@ const emit = defineEmits<{
       :busy="busy"
       :run-action="runAction"
     />
+    <GithubAdvancedPanel :key="`advanced-${path}`" :path="path" :busy="busy" :run-action="runAction" />
     <input
       v-model="githubComment"
       class="github-comment"

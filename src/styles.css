@@ -1117,7 +1117,8 @@ button:disabled {
 
 .github-environments > summary,
 .github-resources > summary,
-.github-search > summary {
+.github-search > summary,
+.github-advanced > summary {
   margin-bottom: 8px;
   color: #d8dcea;
   cursor: pointer;
@@ -1127,13 +1128,15 @@ button:disabled {
 
 .github-environments > summary span,
 .github-resources > summary span,
-.github-search > summary span {
+.github-search > summary span,
+.github-advanced > summary span {
   margin-right: 8px;
 }
 
 .github-environments > summary small,
 .github-resources > summary small,
-.github-search > summary small {
+.github-search > summary small,
+.github-advanced > summary small {
   color: #687386;
   font-size: 9px;
   font-weight: 500;
@@ -1244,6 +1247,45 @@ button:disabled {
   color: #aeb6c5;
   font: 10px/1.45 "Cascadia Code", Consolas, monospace;
   white-space: pre-wrap;
+}
+
+.github-advanced-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.github-advanced-grid section {
+  display: grid;
+  gap: 7px;
+  padding: 9px;
+  border: 1px solid #222834;
+  border-radius: 7px;
+}
+
+.github-advanced-grid select,
+.github-advanced-grid input,
+.github-advanced-grid textarea {
+  min-width: 0;
+  padding: 7px 9px;
+  border: 1px solid #2c3343;
+  border-radius: 7px;
+  outline: 0;
+  color: #dce0ea;
+  background: #0b0e14;
+  font: inherit;
+  font-size: 10px;
+}
+
+.github-advanced-grid textarea {
+  min-height: 74px;
+  resize: vertical;
+}
+
+.github-api-endpoint {
+  display: grid;
+  grid-template-columns: 90px minmax(0, 1fr);
+  gap: 7px;
 }
 
 .github-configuration-heading {
@@ -1819,6 +1861,10 @@ button:disabled {
 
   .github-search-form {
     grid-template-columns: 130px minmax(0, 1fr);
+  }
+
+  .github-advanced-grid {
+    grid-template-columns: 1fr;
   }
 }
 
