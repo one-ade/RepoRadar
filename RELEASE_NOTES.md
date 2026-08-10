@@ -1,6 +1,6 @@
-# RepoRadar 0.1.1
+# RepoRadar 0.1.2
 
-RepoRadar 0.1.1 提供一个统一的本地 Git 与 GitHub 桌面工作台。
+RepoRadar 0.1.2 提供一个统一的本地 Git 与 GitHub 桌面工作台，并修复 Windows Release 运行体验问题。
 
 ## 主要能力
 
@@ -12,7 +12,8 @@ RepoRadar 0.1.1 提供一个统一的本地 Git 与 GitHub 桌面工作台。
 
 ## 修复
 
-- Windows Release 使用 GUI 子系统，不再额外打开终端窗口。
+- Windows Release 使用 GUI 子系统，并隐藏 Git/GitHub CLI 子进程的控制台窗口。
+- 应用启动、切换项目、执行 Git/GitHub 操作和初始化仓库时不再闪现终端窗口。
 
 ## 发布验证
 
