@@ -1,6 +1,6 @@
-# RepoRadar 0.1.0
+# RepoRadar 0.1.1
 
-RepoRadar 0.1.0 提供一个统一的本地 Git 与 GitHub 桌面工作台。
+RepoRadar 0.1.1 提供一个统一的本地 Git 与 GitHub 桌面工作台。
 
 ## 主要能力
 
@@ -9,6 +9,10 @@ RepoRadar 0.1.0 提供一个统一的本地 Git 与 GitHub 桌面工作台。
 - 管理 Repository、Pull Request、Issue、Actions、Release、环境、Secret、Variable、Label 与 Ruleset。
 - 接入 Projects、Discussions、Codespaces、GitHub 全局搜索、安全只读 `gh` 命令和 `gh api` 请求构造器。
 - 识别 GitHub.com 与 GitHub Enterprise Server remote，并展示多 Host 登录状态而不读取或保存 Token。
+
+## 修复
+
+- Windows Release 使用 GUI 子系统，不再额外打开终端窗口。
 
 ## 发布验证
 
