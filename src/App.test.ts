@@ -114,7 +114,6 @@ describe("App", () => {
       global: {
         stubs: {
           AppTitlebar: true,
-          AppSidebar: true,
           AppHeader: {
             props: ["searchQuery"],
             emits: ["update:searchQuery"],
@@ -136,6 +135,9 @@ describe("App", () => {
         },
       },
     });
+    await flushPromises();
+
+    await wrapper.get("nav button:nth-of-type(2)").trigger("click");
     await flushPromises();
 
     await wrapper.get(".search-stub").setValue("frontend");

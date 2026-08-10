@@ -5,6 +5,8 @@ import type { Project } from "../api";
 const props = defineProps<{
   projects: Project[];
   visibleProjects: Project[];
+  loading: boolean;
+  error?: string;
   selectedId?: number;
   busy: boolean;
   saveTags: (project: Project, tags: string[]) => Promise<boolean>;
@@ -32,6 +34,7 @@ async function submitTags(project: Project) {
 
 const emit = defineEmits<{
   rescan: [];
+  retry: [];
   select: [project: Project];
   favorite: [project: Project];
 }>();
@@ -42,15 +45,11 @@ const emit = defineEmits<{
     <div>
       <span class="section-label">项目雷达</span>
       <h2>
-        {{
-          projects.length
-            ? `${visibleProjects.length}/${projects.length} 个项目`
-            : "还没有项目"
-        }}
+        {{ loading ? "正在加载项目" : error ? "项目加载失败" : projects.length ? `${visibleProjects.length}/${projects.length} 个项目` : "还没有项目" }}
       </h2>
     </div>
     <button
-      v-if="projects.length"
+      v-if="projects.length && !loading && !error"
       class="text-button"
       :disabled="busy"
       @click="emit('rescan')"
@@ -59,7 +58,23 @@ const emit = defineEmits<{
     </button>
   </div>
 
-  <div v-if="visibleProjects.length" class="project-list">
+  <div v-if="error" class="project-error-content" role="alert">
+    <span class="detail-empty-mark">!</span>
+    <div>
+      <h2>项目加载失败</h2>
+      <p>项目暂时不可用，请稍后重试。</p>
+      <small class="project-error-message">{{ error }}</small>
+      <button class="secondary-action retry-action" :disabled="busy || loading" @click="emit('retry')">
+        重试加载
+      </button>
+    </div>
+  </div>
+
+  <div v-else-if="loading" class="project-skeleton" aria-label="正在加载项目" aria-busy="true">
+    <span v-for="index in 4" :key="index" class="skeleton-row"></span>
+  </div>
+
+  <div v-else-if="visibleProjects.length" class="project-list">
     <div
       v-for="project in visibleProjects"
       :key="project.id"

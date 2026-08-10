@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import type { EnvironmentStatus, ToolStatus } from "../api";
 
-defineProps<{ environment: EnvironmentStatus | null }>();
+defineProps<{
+  environment: EnvironmentStatus | null;
+  loading?: boolean;
+}>();
 
 function toolLabel(tool: ToolStatus | undefined, auth = false) {
   if (!tool?.installed) return "未检测到";
@@ -11,7 +14,16 @@ function toolLabel(tool: ToolStatus | undefined, auth = false) {
 </script>
 
 <template>
-  <section class="status-grid" aria-label="环境状态">
+  <section class="status-grid" aria-label="环境状态" :aria-busy="loading">
+    <template v-if="loading">
+      <article v-for="index in 3" :key="index" class="status-card status-card-skeleton">
+        <span class="skeleton-icon"></span>
+        <span class="skeleton-line short"></span>
+        <span class="skeleton-line medium"></span>
+        <span class="skeleton-line long"></span>
+      </article>
+    </template>
+    <template v-else>
     <article class="status-card">
       <div class="status-top">
         <span class="tool-logo git-logo">git</span>
@@ -49,5 +61,6 @@ function toolLabel(tool: ToolStatus | undefined, auth = false) {
         {{ environment?.databaseReady ? "数据库已就绪" : "等待初始化" }}
       </span>
     </article>
+    </template>
   </section>
 </template>

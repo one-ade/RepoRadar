@@ -14,11 +14,46 @@ const project: Project = {
 };
 
 describe("ProjectCatalog", () => {
+  it("shows a stable loading skeleton before the project list is ready", () => {
+    const wrapper = mount(ProjectCatalog, {
+      props: {
+        projects: [],
+        visibleProjects: [],
+        loading: true,
+        busy: false,
+        saveTags: async () => true,
+      },
+    });
+
+    expect(wrapper.find(".project-skeleton").exists()).toBe(true);
+    expect(wrapper.find(".empty-content").exists()).toBe(false);
+  });
+
+  it("shows a retryable error instead of an indistinguishable empty state", async () => {
+    const wrapper = mount(ProjectCatalog, {
+      props: {
+        projects: [],
+        visibleProjects: [],
+        loading: false,
+        error: "数据库暂不可用",
+        busy: false,
+        saveTags: async () => true,
+      },
+    });
+
+    expect(wrapper.get(".project-error-content").text()).toContain("项目加载失败");
+    expect(wrapper.find(".empty-content").exists()).toBe(false);
+    await wrapper.get(".retry-action").trigger("click");
+
+    expect(wrapper.emitted("retry")).toHaveLength(1);
+  });
+
   it("emits selection and favorite actions when ready", async () => {
     const wrapper = mount(ProjectCatalog, {
       props: {
         projects: [project],
         visibleProjects: [project],
+        loading: false,
         busy: false,
         saveTags: async () => true,
       },
@@ -36,6 +71,7 @@ describe("ProjectCatalog", () => {
       props: {
         projects: [project],
         visibleProjects: [project],
+        loading: false,
         busy: true,
         saveTags: async () => true,
       },
@@ -58,6 +94,7 @@ describe("ProjectCatalog", () => {
       props: {
         projects: [project],
         visibleProjects: [project],
+        loading: false,
         busy: false,
         saveTags,
       },
@@ -78,6 +115,7 @@ describe("ProjectCatalog", () => {
       props: {
         projects: [project],
         visibleProjects: [project],
+        loading: false,
         busy: false,
         saveTags,
       },

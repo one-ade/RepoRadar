@@ -1,14 +1,14 @@
 <script setup lang="ts">
+export type WorkspaceSection = "overview" | "projects" | "github" | "operations";
+
 defineProps<{
-  activeSection: "overview" | "projects";
+  activeSection: WorkspaceSection;
   projectCount: number;
   githubDisabled: boolean;
 }>();
 
 const emit = defineEmits<{
-  navigate: [section: "overview" | "projects"];
-  github: [];
-  operations: [];
+  navigate: [section: WorkspaceSection];
 }>();
 </script>
 
@@ -25,7 +25,7 @@ const emit = defineEmits<{
     <nav aria-label="主导航">
       <button
         :class="['nav-item', activeSection === 'overview' && 'active']"
-        :aria-pressed="activeSection === 'overview'"
+        :aria-current="activeSection === 'overview' ? 'page' : undefined"
         @click="emit('navigate', 'overview')"
       >
         <span class="nav-icon">⌁</span>
@@ -33,18 +33,27 @@ const emit = defineEmits<{
       </button>
       <button
         :class="['nav-item', activeSection === 'projects' && 'active']"
-        :aria-pressed="activeSection === 'projects'"
+        :aria-current="activeSection === 'projects' ? 'page' : undefined"
         @click="emit('navigate', 'projects')"
       >
         <span class="nav-icon">◇</span>
         项目
         <span class="count-badge">{{ projectCount }}</span>
       </button>
-      <button class="nav-item" :disabled="githubDisabled" @click="emit('github')">
+      <button
+        :class="['nav-item', activeSection === 'github' && 'active']"
+        :disabled="githubDisabled"
+        :aria-current="activeSection === 'github' ? 'page' : undefined"
+        @click="emit('navigate', 'github')"
+      >
         <span class="nav-icon">⑂</span>
         GitHub
       </button>
-      <button class="nav-item" @click="emit('operations')">
+      <button
+        :class="['nav-item', activeSection === 'operations' && 'active']"
+        :aria-current="activeSection === 'operations' ? 'page' : undefined"
+        @click="emit('navigate', 'operations')"
+      >
         <span class="nav-icon">↯</span>
         操作中心
       </button>

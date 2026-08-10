@@ -29,6 +29,8 @@ export function useProjectDiscovery(
   const projects = ref<Project[]>([]);
   const selectedProject = ref<Project | null>(null);
   const loading = ref(true);
+  const projectsLoading = ref(true);
+  const projectsError = ref("");
   const scanning = ref(false);
   const scanProgress = ref<ScanProgress | null>(null);
 
@@ -45,7 +47,16 @@ export function useProjectDiscovery(
   }
 
   async function refreshProjects() {
-    projects.value = await listProjects();
+    projectsLoading.value = true;
+    projectsError.value = "";
+    try {
+      projects.value = await listProjects();
+    } catch (cause) {
+      projectsError.value = String(cause);
+      throw cause;
+    } finally {
+      projectsLoading.value = false;
+    }
   }
 
   async function chooseProject() {
@@ -127,6 +138,8 @@ export function useProjectDiscovery(
     projects,
     selectedProject,
     loading,
+    projectsLoading,
+    projectsError,
     scanning,
     scanProgress,
     refreshEnvironment,

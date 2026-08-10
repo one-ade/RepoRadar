@@ -1,5 +1,9 @@
 <script setup lang="ts">
 defineProps<{
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+  searchPlaceholder: string;
   searchQuery: string;
   showOperations: boolean;
   activeOperationCount: number;
@@ -19,14 +23,14 @@ const emit = defineEmits<{
 <template>
   <header>
     <div>
-      <p class="eyebrow">WORKSPACE OVERVIEW</p>
-      <h1>掌握每一个代码仓库</h1>
-      <p class="subtitle">本地 Git 与 GitHub 工作流，从一个清晰的界面开始。</p>
+      <p class="eyebrow">{{ eyebrow }}</p>
+      <h1>{{ title }}</h1>
+      <p class="subtitle">{{ subtitle }}</p>
     </div>
     <input
       :value="searchQuery"
       class="search-input"
-      placeholder="搜索项目…"
+      :placeholder="searchPlaceholder"
       aria-label="搜索项目"
       @input="emit('update:searchQuery', ($event.target as HTMLInputElement).value)"
     />

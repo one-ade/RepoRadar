@@ -79,4 +79,24 @@ describe("useProjectDiscovery", () => {
     expect(discovery.selectedProject.value).toEqual(updated);
     expect(runAction).toHaveBeenCalledTimes(1);
   });
+
+  it("tracks project loading independently from environment loading", async () => {
+    const discovery = useProjectDiscovery(vi.fn(), vi.fn(), vi.fn(), vi.fn());
+
+    expect(discovery.projectsLoading.value).toBe(true);
+
+    await discovery.refreshProjects();
+
+    expect(discovery.projectsLoading.value).toBe(false);
+  });
+
+  it("keeps a project loading error available for a retryable view", async () => {
+    api.listProjects.mockRejectedValueOnce(new Error("database unavailable"));
+    const discovery = useProjectDiscovery(vi.fn(), vi.fn(), vi.fn(), vi.fn());
+
+    await expect(discovery.refreshProjects()).rejects.toThrow("database unavailable");
+
+    expect(discovery.projectsLoading.value).toBe(false);
+    expect(discovery.projectsError.value).toContain("database unavailable");
+  });
 });

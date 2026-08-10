@@ -5,7 +5,7 @@ import AppSidebar from "./AppSidebar.vue";
 import OperationsPanel from "./OperationsPanel.vue";
 
 describe("app chrome", () => {
-  it("keeps GitHub navigation disabled until a project is ready", async () => {
+  it("uses the primary navigation tabs for GitHub and operations", async () => {
     const wrapper = mount(AppSidebar, {
       props: {
         activeSection: "overview",
@@ -17,11 +17,31 @@ describe("app chrome", () => {
 
     expect(githubButton.attributes("disabled")).toBeDefined();
     await githubButton.trigger("click");
-    expect(wrapper.emitted("github")).toBeUndefined();
+    expect(wrapper.emitted("navigate")).toBeUndefined();
 
     await wrapper.setProps({ githubDisabled: false });
     await githubButton.trigger("click");
-    expect(wrapper.emitted("github")).toHaveLength(1);
+    expect(wrapper.emitted("navigate")).toEqual([["github"]]);
+
+    await wrapper.get("nav button:nth-of-type(4)").trigger("click");
+    expect(wrapper.emitted("navigate")).toEqual([["github"], ["operations"]]);
+  });
+
+  it("exposes the active view to assistive technology", async () => {
+    const wrapper = mount(AppSidebar, {
+      props: {
+        activeSection: "overview",
+        projectCount: 0,
+        githubDisabled: true,
+      },
+    });
+
+    expect(wrapper.get("nav button:nth-of-type(1)").attributes("aria-current")).toBe("page");
+    expect(wrapper.get("nav button:nth-of-type(2)").attributes("aria-current")).toBeUndefined();
+
+    await wrapper.setProps({ activeSection: "operations" });
+
+    expect(wrapper.get("nav button:nth-of-type(4)").attributes("aria-current")).toBe("page");
   });
 
   it("emits clear from the operation panel without exposing action details", async () => {
