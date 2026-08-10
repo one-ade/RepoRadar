@@ -24,7 +24,11 @@ src-tauri/gen/
 .codebase-memory/
 .idea/
 .vscode/
+.omo/
+.playwright-cli/
 
 # Operating system files
 .DS_Store
 Thumbs.db
+
+.agents/
