@@ -2,6 +2,8 @@ use std::{collections::HashMap, process::Command};
 
 use serde::{Deserialize, Serialize};
 
+use crate::process::hide_console_window;
+
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct EnvironmentStatus {
@@ -46,10 +48,9 @@ pub fn detect_environment(database_ready: bool) -> EnvironmentStatus {
 }
 
 fn detect_github_hosts() -> Vec<GithubHost> {
-    let Ok(output) = Command::new("gh")
-        .args(["auth", "status", "--json", "hosts"])
-        .output()
-    else {
+    let mut command = Command::new("gh");
+    hide_console_window(&mut command);
+    let Ok(output) = command.args(["auth", "status", "--json", "hosts"]).output() else {
         return Vec::new();
     };
     if !output.status.success() {
@@ -66,7 +67,9 @@ fn parse_github_hosts(output: &[u8]) -> Vec<GithubHost> {
 }
 
 fn detect_tool(program: &str, version_args: &[&str], checks_auth: bool) -> ToolStatus {
-    let Ok(output) = Command::new(program).args(version_args).output() else {
+    let mut command = Command::new(program);
+    hide_console_window(&mut command);
+    let Ok(output) = command.args(version_args).output() else {
         return ToolStatus {
             installed: false,
             version: None,
@@ -83,7 +86,9 @@ fn detect_tool(program: &str, version_args: &[&str], checks_auth: bool) -> ToolS
             .to_owned()
     });
     let authenticated = checks_auth.then(|| {
-        Command::new(program)
+        let mut command = Command::new(program);
+        hide_console_window(&mut command);
+        command
             .args(["auth", "status"])
             .output()
             .is_ok_and(|output| output.status.success())

@@ -3,6 +3,7 @@ mod database;
 mod environment;
 mod git;
 mod github;
+mod process;
 mod projects;
 
 use std::sync::{Arc, atomic::AtomicBool};

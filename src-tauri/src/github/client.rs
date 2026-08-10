@@ -6,7 +6,7 @@ use std::{
 
 use serde::Deserialize;
 
-use crate::git;
+use crate::{git, process::hide_console_window};
 
 pub(super) fn repository_reference(path: &Path) -> Result<String, String> {
     let remote = git::remote_url(path)?;
@@ -71,6 +71,7 @@ pub(super) fn run_gh(
     input: Option<&str>,
 ) -> Result<String, String> {
     let mut command = Command::new("gh");
+    hide_console_window(&mut command);
     if let Some(reference) = reference {
         command.env("GH_REPO", reference);
     }

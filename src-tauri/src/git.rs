@@ -5,6 +5,8 @@ use std::{
 
 use serde::Serialize;
 
+use crate::process::hide_console_window;
+
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct GitStatus {
@@ -190,6 +192,7 @@ fn run<const N: usize>(path: &Path, args: [&str; N]) -> Result<Output, String> {
 
 fn git_command(path: &Path) -> Command {
     let mut command = Command::new("git");
+    hide_console_window(&mut command);
     command.arg("-C").arg(path);
     command
 }

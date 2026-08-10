@@ -9,7 +9,7 @@ use std::{
 
 use serde::Serialize;
 
-use crate::database::Database;
+use crate::{database::Database, process::hide_console_window};
 
 #[derive(Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -154,7 +154,9 @@ fn canonical_directory(path: &Path) -> Result<PathBuf, String> {
 }
 
 fn initialize_repository(path: &Path) -> Result<(), String> {
-    let output = Command::new("git")
+    let mut command = Command::new("git");
+    hide_console_window(&mut command);
+    let output = command
         .args(["-C"])
         .arg(path)
         .arg("init")
