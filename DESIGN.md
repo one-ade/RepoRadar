@@ -50,9 +50,60 @@ Primary font is the existing system UI stack (`Inter`, `SF Pro Display`, `Segoe 
 
 ## 4. Spacing & Layout
 
-Spacing uses the shared `--space-*` scale (4–32px) plus semantic shell/component tokens for exact chrome dimensions. Typography uses named `--font-size-*` tokens for display, title, body, metadata, detail, and operation text; radii use `--radius-*`. The desktop shell is a fixed-width sidebar plus a flexible content region. The main region owns one view viewport; the project view owns two named local scroll regions: project list and project detail. At mobile widths the sidebar becomes a horizontal tab rail and the project panes stack into one readable column.
+Spacing uses the shared `--space-*` scale (4–32px) plus semantic shell/component tokens for exact chrome dimensions. Typography uses named `--font-size-*` tokens for display, title, body, metadata, detail, and operation text; radii use `--radius-*`.
+
+The repository workspace uses a four-part desktop shell:
+
+- `--size-global-rail: 60px` — compact global destinations for repositories, activity, and diagnostics.
+- `--size-project-rail: clamp(240px, 18vw, 300px)` — the persistent repository switcher, search, filters, and scan controls.
+- `--size-detail-panel: 400px` — an on-demand object detail surface for GitHub pull requests, issues, releases, and Actions runs.
+- `--size-workspace-header: 64px` — the current repository context and high-frequency workspace actions.
+- `--size-activity-tray: 224px` — the expandable activity surface for scan and operation history.
+
+The shell reads as `GlobalRail → ProjectRail → MainWorkspace → DetailPanel`, with `ActivityTray` attached to the bottom of the workspace rather than replacing the current repository view. `GlobalRail` owns cross-repository destinations only. `ProjectRail` owns project discovery and selection. `MainWorkspace` owns the current repository's Git or GitHub list/task surface. `DetailPanel` is reserved for contextual object detail and is absent when no object is selected. `ActivityTray` is closed by default and opens without changing repository context.
+
+Each of `ProjectRail`, `MainWorkspace`, `DetailPanel`, and `ActivityTray` may own at most one scrolling container. The outer shell remains `overflow: hidden`; nested panes must not create competing page scrollbars. At widths below 1360px, `DetailPanel` becomes an overlay sheet. At widths below 760px, `GlobalRail` becomes a horizontal rail, `ProjectRail` becomes collapsible, and `DetailPanel` / `ActivityTray` become full-width sheets.
 
 ## 5. Components
+
+### GlobalRail
+
+- **Structure**: labelled icon buttons inside a `nav`, with repositories selected by default.
+- **Destinations**: repositories, activity, diagnostics. GitHub is a repository-local view, not a global destination.
+- **States**: default, active, focus-visible, activity badge, compact mobile.
+- **Accessibility**: `aria-current="page"`, visible labels or tooltips, keyboard reachable, badge text exposed to assistive technology.
+
+### ProjectRail
+
+- **Structure**: search and filter controls followed by favourite/tag groups and project rows.
+- **States**: loading, selected, busy, filtered empty, scan feedback, error.
+- **Accessibility**: project rows are buttons with selected semantics and visible focus; scan controls retain text feedback.
+- **Scroll**: the project list is the only scroll owner inside the rail.
+
+### WorkspaceHeader
+
+- **Structure**: current repository name/path, branch and Git status metadata, activity badge, scan state, and global actions.
+- **States**: no project, loading, ready, scanning, busy, error.
+- **Accessibility**: descriptive heading remains present; operation count is announced without exposing command arguments or secrets.
+
+### DetailPanel
+
+- **Structure**: title and close control, object summary, grouped fields/actions, and a single panel-local scroll region.
+- **Targets**: pull request, issue, release, Actions run. Git diff remains in the main workspace.
+- **States**: empty, loading (`aria-busy`), ready, error, busy action.
+- **Accessibility**: close is keyboard reachable, focus-visible, and does not reset the underlying repository or GitHub section.
+
+### ActivityTray
+
+- **Structure**: scan progress plus recent operation records, with cancel and clear controls.
+- **States**: closed, open, scanning, empty, populated.
+- **Accessibility**: `aria-live="polite"` is retained; activity text contains only action name, time, and result, never command arguments, tokens, or repository contents.
+
+### GithubWorkspaceNav
+
+- **Structure**: repository-local secondary navigation for pull requests, issues, Actions, releases, and tools.
+- **States**: default, active, focus-visible, disabled while busy.
+- **Accessibility**: one current section is exposed with `aria-current="page"`; only the selected section mounts its primary content.
 
 ### Primary navigation tabs
 
@@ -62,7 +113,7 @@ Spacing uses the shared `--space-*` scale (4–32px) plus semantic shell/compone
 - **States**: hover, active, focus-visible, disabled.
 - **Accessibility**: `aria-current="page"`, keyboard reachable, disabled GitHub when no project is selected.
 - **Motion**: active indicator and surface changes use 200ms opacity/background transitions only.
-- **Layout**: fixed sidebar on desktop; horizontal overflow-safe tab rail on mobile.
+- **Layout**: `GlobalRail` is fixed on desktop; it becomes a horizontal overflow-safe tab rail on mobile.
 
 ### View viewport
 
@@ -71,7 +122,7 @@ Spacing uses the shared `--space-*` scale (4–32px) plus semantic shell/compone
 - **States**: loading, ready, empty, error.
 - **Accessibility**: active view has a descriptive heading; loading regions expose `aria-busy`.
 - **Motion**: view entry uses a short opacity transition; reduced motion disables it.
-- **Layout**: the viewport is the only primary scroll owner.
+- **Layout**: the active main workspace is the primary content surface; each named pane owns no more than one scroll container.
 
 ### Project split workspace
 
@@ -80,7 +131,7 @@ Spacing uses the shared `--space-*` scale (4–32px) plus semantic shell/compone
 - **States**: selected, busy, loading, empty, error.
 - **Accessibility**: project rows are buttons with visible focus and selected styling.
 - **Motion**: selected row and detail loading transition use opacity/background only.
-- **Layout**: two local scroll panes on desktop; stacked on mobile.
+- **Layout**: ProjectRail and MainWorkspace are separate panes on desktop; ProjectRail collapses and the workspace becomes a full-width surface on mobile.
 
 ### Loading feedback
 

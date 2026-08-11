@@ -97,6 +97,6 @@ describe("useProjectDiscovery", () => {
     await expect(discovery.refreshProjects()).rejects.toThrow("database unavailable");
 
     expect(discovery.projectsLoading.value).toBe(false);
-    expect(discovery.projectsError.value).toContain("database unavailable");
+    expect(discovery.projectsError.value).toBe("项目加载失败，请重试。");
   });
 });

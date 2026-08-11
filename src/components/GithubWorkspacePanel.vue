@@ -1,26 +1,28 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import type { GithubOverview, GithubPullRequest, GithubPullRequestDetail } from "../api";
-import GithubConfigurationPanel from "./GithubConfigurationPanel.vue";
-import GithubAdvancedPanel from "./GithubAdvancedPanel.vue";
-import GithubEnvironmentsPanel from "./GithubEnvironmentsPanel.vue";
+import type { GithubComposer, GithubSection } from "../workspace";
+import GithubActionsWorkspace from "./GithubActionsWorkspace.vue";
 import GithubIssueWorkspace from "./GithubIssueWorkspace.vue";
-import GithubPullRequestDetailPanel from "./GithubPullRequestDetailPanel.vue";
 import GithubPullRequestSection from "./GithubPullRequestSection.vue";
 import GithubReleaseWorkspace from "./GithubReleaseWorkspace.vue";
-import GithubResourcesPanel from "./GithubResourcesPanel.vue";
-import GithubSearchPanel from "./GithubSearchPanel.vue";
+import GithubToolsPanel from "./GithubToolsPanel.vue";
+import GithubWorkspaceNav from "./GithubWorkspaceNav.vue";
 
 type RunAction = (action: () => Promise<void>, label?: string) => Promise<void>;
 
-defineProps<{
+const props = withDefaults(defineProps<{
   path: string;
   busy: boolean;
   overview: GithubOverview | null;
+  section?: GithubSection;
   selectedPullRequest: GithubPullRequest | null;
   pullRequestDetail: GithubPullRequestDetail | null;
   runLog: string;
   runAction: RunAction;
-}>();
+}>(), { section: "pull-requests" as GithubSection });
+
+const composer = ref<GithubComposer>("none");
 
 const githubTitle = defineModel<string>("githubTitle", { required: true });
 const githubBody = defineModel<string>("githubBody", { required: true });
@@ -49,6 +51,8 @@ const emit = defineEmits<{
   merge: [number: number];
   "view-pull-request": [pullRequest: GithubPullRequest];
   "close-pull-request": [];
+  "view-issue": [issue: import("../api").GithubIssue];
+  "view-release": [release: import("../api").GithubRelease];
   "comment-issue": [number: number];
   "close-issue": [number: number];
   refresh: [];
@@ -58,6 +62,7 @@ const emit = defineEmits<{
   "cancel-run": [databaseId: number];
   "download-artifacts": [databaseId: number];
   "download-release": [tag: string];
+  "select-section": [section: GithubSection];
   notice: [message: string];
 }>();
 </script>
@@ -104,152 +109,107 @@ const emit = defineEmits<{
         <span>⑂ {{ overview.repository.forkCount }}</span>
       </div>
     </div>
-    <div class="github-compose">
-      <input v-model="githubTitle" placeholder="标题" aria-label="GitHub 标题" />
-      <textarea v-model="githubBody" placeholder="正文（可选）" aria-label="GitHub 正文"></textarea>
-      <button
-        class="small-action commit-action"
-        :disabled="busy"
-        @click="emit('create-item', 'pr')"
-      >
-        创建 PR
-      </button>
-      <button class="small-action" :disabled="busy" @click="emit('create-item', 'issue')">
-        创建 Issue
-      </button>
+    <GithubWorkspaceNav :section="props.section" @select="emit('select-section', $event)" />
+    <div class="github-create-actions" aria-label="GitHub 创建操作">
+      <button class="small-action" :disabled="busy" @click="composer = 'pull-request'">新建 PR</button>
+      <button class="small-action" :disabled="busy" @click="composer = 'issue'">新建 Issue</button>
+      <button class="small-action" :disabled="busy" @click="composer = 'release'">新建 Release</button>
+      <button class="small-action" :disabled="busy" @click="composer = 'clone'">克隆仓库</button>
+      <button class="small-action" :disabled="busy" @click="composer = 'repository'">创建仓库</button>
     </div>
-    <div class="github-repository-tools">
-      <input v-model="cloneReference" placeholder="owner/repo 或 GitHub URL" aria-label="克隆仓库" />
-      <button class="small-action" :disabled="busy" @click="emit('clone')">克隆</button>
-      <input v-model="repositoryName" placeholder="新仓库名称" aria-label="新仓库名称" />
-      <select v-model="repositoryVisibility" aria-label="仓库可见性">
-        <option value="private">Private</option>
-        <option value="public">Public</option>
-        <option value="internal">Internal</option>
-      </select>
-      <input
-        v-model="repositoryDescription"
-        placeholder="描述（可选）"
-        aria-label="仓库描述"
-      />
-      <button
-        class="small-action commit-action"
-        :disabled="busy"
-        @click="emit('create-repository')"
-      >
-        从当前项目创建
-      </button>
-    </div>
-    <div class="github-release-compose">
-      <input v-model="releaseTag" placeholder="Release Tag" aria-label="Release Tag" />
-      <input
-        v-model="releaseTitle"
-        placeholder="Release 标题（可选）"
-        aria-label="Release 标题"
-      />
-      <textarea
-        v-model="releaseNotes"
-        placeholder="Release Notes（可选）"
-        aria-label="Release Notes"
-      ></textarea>
-      <button
-        class="small-action commit-action"
-        :disabled="busy"
-        @click="emit('create-release')"
-      >
-        创建 Release
-      </button>
-    </div>
-    <GithubConfigurationPanel
-      :key="path"
-      :path="path"
-      :busy="busy"
-      :run-action="runAction"
-      @notice="emit('notice', $event)"
-    />
-    <GithubEnvironmentsPanel
-      :key="`environments-${path}`"
-      :path="path"
-      :busy="busy"
-      :run-action="runAction"
-      @notice="emit('notice', $event)"
-    />
-    <GithubResourcesPanel
-      :key="`resources-${path}`"
-      :path="path"
-      :busy="busy"
-      :run-action="runAction"
-      @notice="emit('notice', $event)"
-    />
-    <GithubSearchPanel
-      :key="`search-${path}`"
-      :path="path"
-      :busy="busy"
-      :run-action="runAction"
-    />
-    <GithubAdvancedPanel :key="`advanced-${path}`" :path="path" :busy="busy" :run-action="runAction" />
-    <input
-      v-model="githubComment"
-      class="github-comment"
-      placeholder="Review 或 Issue 评论"
-      aria-label="GitHub 评论"
-    />
-    <div class="github-columns">
+
+    <section v-if="composer !== 'none'" class="github-composer-card">
+      <div class="github-section-heading">
+        <div>
+          <span class="section-label">COMPOSER</span>
+          <h4>{{ composer === 'pull-request' ? '创建 Pull Request' : composer === 'issue' ? '创建 Issue' : composer === 'release' ? '创建 Release' : composer === 'clone' ? '克隆仓库' : '创建 GitHub 仓库' }}</h4>
+        </div>
+        <button class="small-action" @click="composer = 'none'">取消</button>
+      </div>
+      <div v-if="composer === 'pull-request' || composer === 'issue'" class="github-compose">
+        <input v-model="githubTitle" placeholder="标题" aria-label="GitHub 标题" />
+        <textarea v-model="githubBody" placeholder="正文（可选）" aria-label="GitHub 正文"></textarea>
+        <button
+          class="small-action commit-action"
+          :disabled="busy"
+          @click="emit('create-item', composer === 'pull-request' ? 'pr' : 'issue'); composer = 'none'"
+        >
+          创建 {{ composer === 'pull-request' ? 'PR' : 'Issue' }}
+        </button>
+      </div>
+      <div v-else-if="composer === 'release'" class="github-release-compose">
+        <input v-model="releaseTag" placeholder="Release Tag" aria-label="Release Tag" />
+        <input v-model="releaseTitle" placeholder="Release 标题（可选）" aria-label="Release 标题" />
+        <textarea v-model="releaseNotes" placeholder="Release Notes（可选）" aria-label="Release Notes"></textarea>
+        <button class="small-action commit-action" :disabled="busy" @click="emit('create-release'); composer = 'none'">创建 Release</button>
+      </div>
+      <div v-else class="github-repository-tools">
+        <template v-if="composer === 'clone'">
+          <input v-model="cloneReference" placeholder="owner/repo 或 GitHub URL" aria-label="克隆仓库" />
+          <button class="small-action commit-action" :disabled="busy" @click="emit('clone'); composer = 'none'">克隆</button>
+        </template>
+        <template v-else>
+          <input v-model="repositoryName" placeholder="新仓库名称" aria-label="新仓库名称" />
+          <select v-model="repositoryVisibility" aria-label="仓库可见性">
+            <option value="private">Private</option>
+            <option value="public">Public</option>
+            <option value="internal">Internal</option>
+          </select>
+          <input v-model="repositoryDescription" placeholder="描述（可选）" aria-label="仓库描述" />
+          <button class="small-action commit-action" :disabled="busy" @click="emit('create-repository'); composer = 'none'">创建并推送</button>
+        </template>
+      </div>
+    </section>
+
+    <section v-if="props.section === 'pull-requests'" class="github-section-view">
+      <div class="github-section-heading">
+        <div><span class="section-label">COLLABORATION</span><h4>Pull Requests · {{ overview.pullRequests.length }}</h4></div>
+      </div>
+      <input v-model="githubComment" class="github-comment" placeholder="Review 评论" aria-label="GitHub 评论" />
       <GithubPullRequestSection
         :pull-requests="overview.pullRequests"
         :busy="busy"
+        :show-heading="false"
         @view="emit('view-pull-request', $event)"
         @review="(number, action) => emit('review', number, action)"
         @merge="emit('merge', $event)"
       />
+    </section>
+
+    <section v-else-if="props.section === 'issues'" class="github-section-view">
+      <input v-model="githubComment" class="github-comment" placeholder="Issue 评论" aria-label="GitHub 评论" />
       <GithubIssueWorkspace
-        :path="path" :issues="overview.issues" :busy="busy" :run-action="runAction"
+        :path="path" :issues="overview.issues" :busy="busy" :run-action="runAction" :show-heading="false"
+        @view="emit('view-issue', $event)"
         @comment="emit('comment-issue', $event)" @close="emit('close-issue', $event)"
-        @refresh="emit('refresh')" @notice="emit('notice', $event)"
       />
-      <section>
-        <h4>Workflows · {{ overview.workflows.length }}</h4>
-        <div v-for="workflow in overview.workflows.slice(0, 4)" :key="workflow.id" class="github-row">
-          <span>{{ workflow.state }}</span>
-          <strong>{{ workflow.name }}</strong>
-          <div class="github-row-actions">
-            <small :title="workflow.path">{{ workflow.path }}</small>
-            <button :disabled="busy" @click="emit('dispatch-workflow', workflow.id)">运行</button>
-          </div>
-        </div>
-      </section>
-      <section>
-        <h4>Actions · {{ overview.runs.length }}</h4>
-        <div v-for="run in overview.runs.slice(0, 4)" :key="run.databaseId" class="github-row">
-          <span>{{ run.conclusion ?? run.status }}</span>
-          <strong>{{ run.displayTitle }}</strong>
-          <div class="github-row-actions">
-            <button :disabled="busy" @click="emit('view-run', run.databaseId)">日志</button>
-            <button :disabled="busy" @click="emit('rerun-run', run.databaseId)">重跑</button>
-            <button
-              :disabled="busy || (run.status !== 'in_progress' && run.status !== 'queued')"
-              @click="emit('cancel-run', run.databaseId)"
-            >
-              取消
-            </button>
-            <button :disabled="busy" @click="emit('download-artifacts', run.databaseId)">
-              Artifact
-            </button>
-          </div>
-        </div>
-      </section>
-      <GithubReleaseWorkspace
-        :path="path" :releases="overview.releases" :busy="busy" :run-action="runAction"
-        @download="emit('download-release', $event)" @refresh="emit('refresh')"
-        @notice="emit('notice', $event)"
-      />
-    </div>
-    <GithubPullRequestDetailPanel
-      v-if="selectedPullRequest"
-      :pull-request="selectedPullRequest"
-      :detail="pullRequestDetail"
-      @close="emit('close-pull-request')"
+    </section>
+
+    <GithubActionsWorkspace
+      v-else-if="props.section === 'actions'"
+      :overview="overview"
+      :busy="busy"
+      :run-log="runLog"
+      @dispatch-workflow="emit('dispatch-workflow', $event)"
+      @view-run="emit('view-run', $event)"
+      @rerun-run="emit('rerun-run', $event)"
+      @cancel-run="emit('cancel-run', $event)"
+      @download-artifacts="emit('download-artifacts', $event)"
     />
-    <pre v-if="runLog" class="github-log">{{ runLog }}</pre>
+
+    <GithubReleaseWorkspace
+      v-else-if="props.section === 'releases'"
+      :path="path" :releases="overview.releases" :busy="busy" :run-action="runAction" :show-heading="false"
+      @view="emit('view-release', $event)"
+      @download="emit('download-release', $event)"
+    />
+
+    <GithubToolsPanel
+      v-else
+      :path="path"
+      :busy="busy"
+      :run-action="runAction"
+      @notice="emit('notice', $event)"
+    />
   </div>
 </template>

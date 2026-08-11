@@ -17,7 +17,6 @@ describe("useOperations", () => {
     expect(ledger.operations.value.find(({ id }) => id === successId)?.state).toBe("success");
     expect(ledger.operations.value.find(({ id }) => id === failureId)).toMatchObject({
       state: "failed",
-      error: "Error: rejected",
     });
   });
 
@@ -34,5 +33,18 @@ describe("useOperations", () => {
 
     ledger.clearOperations();
     expect(ledger.operations.value).toEqual([]);
+  });
+
+  it("does not retain failure details in operation records", () => {
+    const ledger = useOperations();
+    const operationId = ledger.beginOperation("同步仓库");
+
+    ledger.finishOperation(
+      operationId,
+      "failed",
+      new Error("gh --token secret-token D:/private/repo"),
+    );
+
+    expect(ledger.operations.value[0]).not.toHaveProperty("error");
   });
 });

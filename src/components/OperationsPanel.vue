@@ -56,7 +56,6 @@ function operationTime(timestamp: number) {
             <template v-else> · 进行中</template>
           </small>
         </div>
-        <small v-if="operation.error" class="operation-error">{{ operation.error }}</small>
       </div>
     </div>
     <p v-else class="clean-state">暂无操作记录</p>

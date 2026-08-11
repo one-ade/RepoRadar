@@ -84,4 +84,62 @@ describe("useGithubWorkspace", () => {
     expect(api.cancelGithubRun).toHaveBeenCalledWith("D:/repo", 9);
     expect(runAction).toHaveBeenCalledTimes(3);
   });
+
+  it("clears the previous run log before loading another run", async () => {
+    const project = ref({
+      id: 1,
+      name: "repo",
+      path: "D:/repo",
+      favorite: false,
+      tags: [],
+      lastSeenAt: "now",
+    });
+    const runAction = vi.fn(async (action: () => Promise<void>) => action());
+    const workspace = useGithubWorkspace(project, runAction, vi.fn(), vi.fn());
+    api.getGithubRunLog.mockResolvedValueOnce("log for run 8");
+
+    await workspace.viewGithubRun(8);
+    expect(workspace.githubRunLog.value).toBe("log for run 8");
+
+    let resolveSecond!: (value: string) => void;
+    api.getGithubRunLog.mockImplementationOnce(
+      () => new Promise((resolve) => { resolveSecond = resolve; }),
+    );
+    const nextRun = workspace.viewGithubRun(9);
+    await Promise.resolve();
+
+    expect(workspace.githubRunLog.value).toBe("");
+
+    resolveSecond("log for run 9");
+    await nextRun;
+    expect(workspace.githubRunLog.value).toBe("log for run 9");
+  });
+
+  it("ignores an older run log that resolves after the newest request", async () => {
+    const project = ref({
+      id: 1,
+      name: "repo",
+      path: "D:/repo",
+      favorite: false,
+      tags: [],
+      lastSeenAt: "now",
+    });
+    const runAction = vi.fn(async (action: () => Promise<void>) => action());
+    const workspace = useGithubWorkspace(project, runAction, vi.fn(), vi.fn());
+    let resolveFirst!: (value: string) => void;
+    let resolveSecond!: (value: string) => void;
+    api.getGithubRunLog
+      .mockImplementationOnce(() => new Promise((resolve) => { resolveFirst = resolve; }))
+      .mockImplementationOnce(() => new Promise((resolve) => { resolveSecond = resolve; }));
+
+    const firstRun = workspace.viewGithubRun(8);
+    const secondRun = workspace.viewGithubRun(9);
+    resolveSecond("log for run 9");
+    await secondRun;
+    expect(workspace.githubRunLog.value).toBe("log for run 9");
+
+    resolveFirst("log for run 8");
+    await firstRun;
+    expect(workspace.githubRunLog.value).toBe("log for run 9");
+  });
 });

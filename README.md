@@ -4,7 +4,7 @@ RepoRadar 是一个使用 Rust、Tauri 2 和 Vue 3 构建的本地 Git/GitHub �
 
 ## 当前版本
 
-`0.1.2` 已完成 Windows Release 构建验证。可从 [GitHub Releases](https://github.com/SANgaojie/RepoRadar/releases) 下载对应平台的桌面包。
+`0.1.3` 已完成 RepoRadar 三栏仓库工作台改造，Windows Release 构建验证由 GitHub Actions 执行。可从 [GitHub Releases](https://github.com/SANgaojie/RepoRadar/releases) 下载对应平台的桌面包。
 
 ## 能力
 

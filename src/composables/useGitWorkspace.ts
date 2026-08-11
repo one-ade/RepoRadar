@@ -18,7 +18,7 @@ import {
   unstageAll,
   type Project,
 } from "../api";
-import type { DetailTab } from "../components/GitDetailControls.vue";
+import type { RepositoryView } from "../workspace";
 
 type RunAction = (action: () => Promise<void>, label?: string) => Promise<void>;
 
@@ -34,13 +34,15 @@ export function useGitWorkspace(
   const history = ref<Awaited<ReturnType<typeof getGitLog>>>([]);
   const commitMessage = ref("");
   const newBranch = ref("");
-  const detailTab = ref<DetailTab>("changes");
+  const detailTab = ref<RepositoryView>("changes");
 
   function resetGit() {
     gitStatus.value = null;
     gitDiff.value = "";
     branches.value = [];
     history.value = [];
+    commitMessage.value = "";
+    newBranch.value = "";
     detailTab.value = "changes";
   }
 
@@ -51,7 +53,7 @@ export function useGitWorkspace(
     });
   }
 
-  async function selectDetailTab(tab: DetailTab) {
+  async function selectDetailTab(tab: RepositoryView) {
     if (!project.value) return;
     detailTab.value = tab;
     await runAction(async () => {

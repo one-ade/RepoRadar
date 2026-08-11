@@ -4,6 +4,7 @@ import type { GithubPullRequest } from "../api";
 defineProps<{
   pullRequests: readonly GithubPullRequest[];
   busy: boolean;
+  showHeading?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -15,7 +16,7 @@ const emit = defineEmits<{
 
 <template>
   <section>
-    <h4>Pull Requests · {{ pullRequests.length }}</h4>
+    <h4 v-if="showHeading !== false">Pull Requests · {{ pullRequests.length }}</h4>
     <div v-for="item in pullRequests.slice(0, 5)" :key="item.number" class="github-row">
       <span>#{{ item.number }}</span>
       <strong>{{ item.title }}</strong>

@@ -15,6 +15,7 @@ import {
   type Project,
   type ScanProgress,
 } from "../api";
+import { userFacingErrors } from "../userFacingErrors";
 
 type RunAction = (action: () => Promise<void>, label?: string) => Promise<void>;
 type ChooseDirectory = (title: string) => Promise<string | null>;
@@ -39,8 +40,8 @@ export function useProjectDiscovery(
     reportError("");
     try {
       environment.value = await getEnvironment();
-    } catch (cause) {
-      reportError(String(cause));
+    } catch {
+      reportError(userFacingErrors.environment);
     } finally {
       loading.value = false;
     }
@@ -52,7 +53,7 @@ export function useProjectDiscovery(
     try {
       projects.value = await listProjects();
     } catch (cause) {
-      projectsError.value = String(cause);
+      projectsError.value = userFacingErrors.projects;
       throw cause;
     } finally {
       projectsLoading.value = false;
@@ -110,8 +111,8 @@ export function useProjectDiscovery(
   async function stopScan() {
     try {
       await cancelScan();
-    } catch (cause) {
-      reportError(String(cause));
+    } catch {
+      reportError(userFacingErrors.stopScan);
     }
   }
 

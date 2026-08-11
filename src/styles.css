@@ -174,6 +174,11 @@
   --size-skeleton-row: 60px;
   --size-error-copy: 300px;
   --size-sidebar: 230px;
+  --size-global-rail: 60px;
+  --size-project-rail: clamp(240px, 18vw, 300px);
+  --size-detail-panel: 400px;
+  --size-workspace-header: 64px;
+  --size-activity-tray: 224px;
   --size-project-list-min: 280px;
   --size-project-compact-min: 220px;
   --size-mobile-nav: 44px;
@@ -1885,10 +1890,15 @@ button:disabled {
 }
 
 .github-pr-detail header p,
-.github-pr-detail-loading {
+.github-pr-detail-loading,
+.github-pr-detail-error {
   margin: 0;
   color: #737c8d;
   font-size: 10px;
+}
+
+.github-pr-detail-error {
+  color: #f0a3ad;
 }
 
 .github-pr-detail-close {
@@ -2531,5 +2541,786 @@ button:disabled {
   .github-loading-orb,
   .button-loader {
     animation: none;
+  }
+}
+
+.app-shell {
+  grid-template-columns: var(--size-global-rail) var(--size-project-rail) minmax(0, 1fr);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.global-rail {
+  width: var(--size-global-rail);
+  align-items: center;
+  padding: var(--space-7) var(--space-3) var(--space-7);
+}
+
+.global-rail .brand {
+  padding: 0 0 var(--space-9);
+}
+
+.global-rail .brand > div {
+  display: none;
+}
+
+.global-rail nav {
+  width: 100%;
+}
+
+.global-rail .nav-item {
+  min-height: 58px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  padding: var(--space-3) 0;
+  border-left: 0;
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+
+.global-rail .nav-item.active {
+  border-left: 0;
+  box-shadow: inset 0 0 0 1px var(--color-accent-primary);
+}
+
+.global-rail .nav-icon {
+  width: auto;
+  font-size: var(--font-size-title);
+  line-height: 1;
+}
+
+.global-rail .nav-label {
+  color: inherit;
+  font-size: var(--font-size-caption);
+  line-height: 1.2;
+}
+
+.global-rail .count-badge {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  min-width: 17px;
+  height: 17px;
+  font-size: 9px;
+}
+
+.project-rail {
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  flex-direction: column;
+  padding: var(--space-8) var(--space-7) var(--space-7);
+  border-right: 1px solid var(--color-border-default);
+  background: var(--color-surface-raised);
+  overflow: hidden;
+}
+
+.project-rail-topline,
+.project-rail-topline-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.project-rail-topline h2 {
+  margin: var(--space-3) 0 0;
+  font-size: var(--font-size-detail);
+}
+
+.project-count {
+  min-width: 24px;
+  padding: 3px 7px;
+  border: 1px solid var(--color-border-control);
+  border-radius: var(--radius-badge);
+  color: var(--color-text-secondary);
+  font: var(--font-size-caption) / 1.2 "Cascadia Code", Consolas, monospace;
+  text-align: center;
+}
+
+.project-rail-collapse {
+  padding: 0;
+  border: 0;
+  color: var(--color-text-muted);
+  background: transparent;
+  font-size: var(--font-size-caption);
+}
+
+.project-rail-collapse:hover {
+  color: var(--color-text-primary);
+}
+
+.project-search {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-7);
+  padding: 0 var(--space-4);
+  border: 1px solid var(--color-border-control);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  background: var(--color-surface-input);
+}
+
+.project-search-icon {
+  font-size: var(--font-size-title);
+}
+
+.project-search input {
+  width: 100%;
+  min-width: 0;
+  padding: 9px 0;
+  border: 0;
+  outline: 0;
+  color: var(--color-text-primary);
+  background: transparent;
+  font: inherit;
+  font-size: var(--font-size-body-sm);
+}
+
+.project-rail-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+.project-rail-actions button {
+  min-width: 0;
+  padding-inline: var(--space-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.project-rail .project-heading {
+  margin-top: var(--space-9);
+}
+
+.project-rail .project-heading h2 {
+  margin-top: var(--space-2);
+  font-size: var(--font-size-body-sm);
+  font-weight: 600;
+}
+
+.project-rail .project-list,
+.project-rail .project-skeleton {
+  min-height: 0;
+  margin-top: var(--space-5);
+  overflow: auto;
+}
+
+.project-rail .empty-content,
+.project-rail .project-error-content {
+  min-height: 0;
+  margin-top: var(--space-9);
+}
+
+.project-rail .empty-content {
+  align-items: stretch;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.project-rail .empty-content > div:last-child {
+  min-width: 0;
+}
+
+.project-rail .empty-content .radar {
+  align-self: center;
+}
+
+.project-rail.collapsed > :not(.project-rail-topline) {
+  display: none;
+}
+
+.workspace-main {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  flex-direction: column;
+  width: auto;
+  margin: 0;
+  padding: var(--space-8) var(--size-main-inline) var(--space-8);
+  overflow: hidden;
+}
+
+.workspace-header {
+  min-height: var(--size-workspace-header);
+  align-items: center;
+  gap: var(--space-8);
+  margin-bottom: var(--space-5);
+}
+
+.workspace-heading {
+  min-width: 0;
+}
+
+.workspace-title-row {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.workspace-header h1 {
+  min-width: 0;
+  margin: var(--space-2) 0 var(--space-3);
+  overflow: hidden;
+  font-size: clamp(22px, 2.2vw, 30px);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.workspace-header .subtitle {
+  max-width: min(58vw, 720px);
+  overflow: hidden;
+  color: var(--color-text-muted);
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: var(--font-size-caption);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.workspace-view-badge,
+.branch-pill {
+  flex: 0 0 auto;
+}
+
+.workspace-view-badge {
+  padding: 4px 7px;
+  border: 1px solid var(--color-border-progress);
+  border-radius: var(--radius-badge);
+  color: var(--color-text-link);
+  background: var(--color-accent-soft);
+  font-size: var(--font-size-caption);
+}
+
+.workspace-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+  align-items: center;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-caption);
+}
+
+.workspace-meta .branch-pill {
+  margin-top: var(--space-2);
+}
+
+.header-actions {
+  flex: 0 0 auto;
+  align-items: center;
+}
+
+.header-actions .active-action {
+  border-color: var(--color-accent-primary);
+  color: var(--color-text-primary);
+  background: var(--color-accent-soft);
+}
+
+.view-viewport {
+  margin-top: var(--space-5);
+}
+
+.repository-view {
+  gap: var(--space-6);
+  padding-bottom: var(--space-5);
+}
+
+.repository-view > .git-detail {
+  min-height: 0;
+  overflow: visible;
+}
+
+.repository-empty {
+  flex: 1;
+  min-height: 320px;
+}
+
+.git-workspace {
+  display: flex;
+  min-width: 0;
+  min-height: 100%;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.git-workspace-context {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-7);
+  padding-bottom: var(--space-5);
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.git-workspace-context h3 {
+  margin: var(--space-2) 0 var(--space-1);
+  font-size: var(--font-size-detail);
+}
+
+.workspace-path {
+  max-width: min(68vw, 840px);
+  margin: 0;
+  overflow: hidden;
+  color: var(--color-text-muted);
+  font: var(--font-size-caption) / 1.4 "Cascadia Code", Consolas, monospace;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.git-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-caption);
+}
+
+.git-actions {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+  padding: var(--space-4);
+  border: 1px solid var(--color-border-control);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-surface-raised) 94%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+.git-actions input {
+  min-width: min(220px, 30vw);
+  flex: 1 1 180px;
+  padding: 7px 9px;
+  border: 1px solid var(--color-border-control);
+  border-radius: var(--radius-sm);
+  outline: 0;
+  color: var(--color-text-on-control);
+  background: var(--color-surface-input);
+  font-size: var(--font-size-body-sm);
+}
+
+.git-view-panel {
+  display: grid;
+  min-width: 0;
+  gap: var(--space-6);
+}
+
+.changes-panel .file-list {
+  margin-top: 0;
+}
+
+.changes-panel .diff-panel {
+  min-height: 160px;
+  padding: var(--space-6);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-input);
+}
+
+.git-workspace .detail-tabs {
+  margin-top: 0;
+}
+
+.github-workspace-nav {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-7);
+  padding-bottom: 1px;
+  border-bottom: 1px solid var(--color-border-default);
+  overflow-x: auto;
+}
+
+.github-workspace-nav-item {
+  flex: 0 0 auto;
+  padding: var(--space-4) var(--space-5);
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--color-text-muted);
+  background: transparent;
+  font-size: var(--font-size-body-sm);
+}
+
+.github-workspace-nav-item.active {
+  border-bottom-color: var(--color-accent-primary);
+  color: var(--color-text-primary);
+  background: var(--color-accent-soft);
+}
+
+.github-create-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.github-composer-card,
+.github-section-view {
+  min-width: 0;
+  margin-top: var(--space-6);
+  padding: var(--space-7);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-raised);
+}
+
+.github-composer-card {
+  background: var(--color-surface-elevated);
+}
+
+.github-section-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-6);
+  margin-bottom: var(--space-5);
+}
+
+.github-section-heading h4 {
+  margin: var(--space-2) 0 0;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-title);
+}
+
+.github-section-count {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-caption);
+}
+
+.github-section-view > .github-issue-workspace,
+.github-section-view > .github-release-workspace {
+  margin-top: 0;
+}
+
+.github-actions-columns {
+  margin-top: 0;
+}
+
+.github-tools-panel {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.github-tools-panel > .github-section-heading {
+  margin-bottom: 0;
+}
+
+@media (max-width: 760px) {
+  .github-section-view,
+  .github-composer-card {
+    padding: var(--space-5);
+  }
+
+  .github-create-actions > button {
+    flex: 1 1 auto;
+  }
+}
+
+.activity-tray {
+  flex: 0 0 auto;
+  max-height: var(--size-activity-tray);
+  margin-top: var(--space-6);
+  padding: var(--space-7) var(--space-8);
+  border: 1px solid var(--color-border-operations);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-operations);
+  overflow: auto;
+}
+
+.activity-tray-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-6);
+}
+
+.activity-tray-heading h2 {
+  margin: var(--space-2) 0 0;
+  font-size: var(--font-size-operation);
+}
+
+.activity-tray .operations-panel {
+  margin-top: var(--space-6);
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.activity-tray .operations-heading {
+  display: none;
+}
+
+.activity-tray .operation-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.activity-tray .operation-note {
+  margin-bottom: 0;
+}
+
+.workspace-main.has-detail-panel {
+  padding-right: calc(var(--size-main-inline) + var(--size-detail-panel));
+}
+
+.detail-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 4;
+  display: flex;
+  width: var(--size-detail-panel);
+  min-width: 0;
+  flex-direction: column;
+  border-left: 1px solid var(--color-border-strong);
+  background: var(--color-surface-raised);
+  box-shadow: -18px 0 36px rgba(0, 0, 0, 0.18);
+}
+
+.detail-panel-heading {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-6);
+  padding: var(--space-8);
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.detail-panel-heading h2 {
+  margin: var(--space-2) 0 0;
+  font-size: var(--font-size-title);
+}
+
+.detail-panel-scroll {
+  min-height: 0;
+  flex: 1;
+  padding: var(--space-7);
+  overflow: auto;
+}
+
+.detail-object-content {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.detail-object-summary {
+  padding-bottom: var(--space-5);
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.detail-object-summary h3 {
+  margin: var(--space-2) 0 var(--space-2);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-detail);
+}
+
+.detail-object-summary p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-sm);
+}
+
+.detail-object-content .github-pr-detail-groups {
+  grid-template-columns: 1fr;
+}
+
+.detail-object-content .github-pr-detail,
+.detail-object-content .github-pr-detail-groups {
+  margin: 0;
+}
+
+.detail-panel .github-pr-detail-groups {
+  grid-template-columns: 1fr;
+}
+
+.detail-panel .github-pr-detail-field {
+  grid-template-columns: minmax(72px, 0.35fr) minmax(0, 1fr);
+}
+
+.detail-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+@media (max-width: 1360px) {
+  .workspace-main {
+    padding-inline: var(--space-9);
+  }
+
+  .workspace-main.has-detail-panel {
+    padding-right: var(--space-9);
+  }
+
+  .detail-panel {
+    top: var(--space-5);
+    right: var(--space-5);
+    bottom: var(--space-5);
+    width: min(var(--size-detail-panel), calc(100% - var(--space-10)));
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-lg);
+  }
+
+  .workspace-header .subtitle {
+    max-width: 45vw;
+  }
+}
+
+@media (max-width: 900px) and (min-width: 761px) {
+  .app-shell {
+    grid-template-columns: var(--size-global-rail) minmax(220px, 28vw) minmax(0, 1fr);
+  }
+
+  .workspace-main {
+    padding-inline: var(--space-7);
+  }
+
+  .workspace-main.has-detail-panel {
+    padding-right: var(--space-mobile-main-inline);
+  }
+
+  .workspace-header {
+    align-items: flex-start;
+  }
+
+  .workspace-header .subtitle {
+    max-width: 38vw;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .activity-tray .operation-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .app-shell {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .global-rail {
+    display: flex;
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    padding: var(--space-3) var(--space-4);
+    border-right: 0;
+    border-bottom: 1px solid var(--color-border-default);
+  }
+
+  .global-rail .brand {
+    flex: 0 0 auto;
+    padding: 0 var(--space-4) 0 0;
+  }
+
+  .global-rail nav {
+    display: flex;
+    min-width: 0;
+    gap: var(--space-2);
+    overflow-x: auto;
+  }
+
+  .global-rail .nav-item {
+    min-width: 68px;
+    min-height: 48px;
+    flex: 0 0 auto;
+    padding-inline: var(--space-3);
+  }
+
+  .global-rail .settings {
+    display: none;
+  }
+
+  .project-rail {
+    flex: 0 0 auto;
+    max-height: 340px;
+    padding: var(--space-6) var(--space-mobile-inline);
+    border-right: 0;
+    border-bottom: 1px solid var(--color-border-default);
+  }
+
+  .project-rail.collapsed {
+    max-height: 62px;
+  }
+
+  .workspace-main {
+    min-height: 0;
+    padding: var(--space-7) var(--space-mobile-main-inline) var(--space-mobile-main-bottom);
+  }
+
+  .workspace-header {
+    align-items: flex-start;
+    gap: var(--space-5);
+  }
+
+  .workspace-header .subtitle {
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  .workspace-title-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .workspace-header h1 {
+    white-space: normal;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .header-actions > button {
+    flex: 1 1 auto;
+  }
+
+  .activity-tray {
+    position: fixed;
+    right: var(--space-4);
+    bottom: var(--space-4);
+    left: var(--space-4);
+    z-index: 10;
+    max-height: 70vh;
+  }
+
+  .detail-panel {
+    position: fixed;
+    top: auto;
+    right: var(--space-4);
+    bottom: var(--space-4);
+    left: var(--space-4);
+    width: auto;
+    max-height: 78vh;
+    z-index: 20;
+  }
+
+  .activity-tray .operation-list {
+    grid-template-columns: 1fr;
   }
 }

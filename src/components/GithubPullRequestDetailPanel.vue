@@ -5,6 +5,7 @@ import GithubDetailGroups from "./GithubDetailGroups.vue";
 defineProps<{
   pullRequest: GithubPullRequest;
   detail: GithubPullRequestDetail | null;
+  embedded?: boolean;
 }>();
 
 defineEmits<{ close: [] }>();
@@ -52,7 +53,7 @@ const fieldGroups = [
         <h4>{{ pullRequest.title }}</h4>
         <p>{{ pullRequest.headRefName }} → {{ pullRequest.baseRefName }}</p>
       </div>
-      <button class="github-pr-detail-close" aria-label="关闭 Pull Request 详情" @click="$emit('close')">
+      <button v-if="!embedded" class="github-pr-detail-close" aria-label="关闭 Pull Request 详情" @click="$emit('close')">
         ×
       </button>
     </header>

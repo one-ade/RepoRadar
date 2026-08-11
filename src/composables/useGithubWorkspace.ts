@@ -31,9 +31,11 @@ export function useGithubWorkspace(
   const repositoryName = ref("");
   const repositoryVisibility = ref<"public" | "private" | "internal">("private");
   const repositoryDescription = ref("");
+  let githubRunRequestId = 0;
 
   function resetGithub() {
     githubOverview.value = null;
+    githubRunRequestId += 1;
     githubRunLog.value = "";
   }
 
@@ -45,8 +47,11 @@ export function useGithubWorkspace(
 
   async function viewGithubRun(databaseId: number) {
     if (!project.value) return;
+    const currentRequest = ++githubRunRequestId;
+    githubRunLog.value = "";
     await runAction(async () => {
-      githubRunLog.value = await getGithubRunLog(project.value!.path, databaseId);
+      const log = await getGithubRunLog(project.value!.path, databaseId);
+      if (currentRequest === githubRunRequestId) githubRunLog.value = log;
     });
   }
 

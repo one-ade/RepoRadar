@@ -8,7 +8,6 @@ export interface OperationRecord {
   state: OperationState;
   startedAt: number;
   finishedAt?: number;
-  error?: string;
 }
 
 export function useOperations() {
@@ -34,13 +33,12 @@ export function useOperations() {
   function finishOperation(
     id: number,
     state: Exclude<OperationState, "running">,
-    cause?: unknown,
+    _cause?: unknown,
   ) {
     const operation = operations.value.find((item) => item.id === id);
     if (!operation) return;
     operation.state = state;
     operation.finishedAt = Date.now();
-    operation.error = state === "failed" ? String(cause ?? "未知错误") : undefined;
   }
 
   function clearOperations() {

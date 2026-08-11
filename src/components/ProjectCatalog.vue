@@ -10,10 +10,13 @@ const props = defineProps<{
   selectedId?: number;
   busy: boolean;
   saveTags: (project: Project, tags: string[]) => Promise<boolean>;
+  searchQuery?: string;
+  scanning?: boolean;
 }>();
 
 const editingId = ref<number>();
 const tagDraft = ref("");
+const collapsed = ref(false);
 
 function editTags(project: Project) {
   editingId.value = project.id;
@@ -33,6 +36,10 @@ async function submitTags(project: Project) {
 }
 
 const emit = defineEmits<{
+  "update:searchQuery": [value: string];
+  add: [];
+  scan: [];
+  "stop-scan": [];
   rescan: [];
   retry: [];
   select: [project: Project];
@@ -41,6 +48,49 @@ const emit = defineEmits<{
 </script>
 
 <template>
+  <aside :class="['project-rail', collapsed && 'collapsed']" aria-label="项目栏">
+  <div class="project-rail-topline">
+    <div>
+      <span class="section-label">PROJECT RAIL</span>
+      <h2>仓库</h2>
+    </div>
+    <div class="project-rail-topline-actions">
+      <span class="project-count">{{ projects.length }}</span>
+      <button
+        class="project-rail-collapse"
+        type="button"
+        :aria-expanded="!collapsed"
+        aria-label="折叠项目栏"
+        @click="collapsed = !collapsed"
+      >
+        {{ collapsed ? "展开" : "收起" }}
+      </button>
+    </div>
+  </div>
+
+  <label class="project-search">
+    <span class="sr-only">搜索项目、路径或标签</span>
+    <span class="project-search-icon">⌕</span>
+    <input
+      :value="searchQuery"
+      placeholder="搜索项目、路径或标签…"
+      @input="emit('update:searchQuery', ($event.target as HTMLInputElement).value)"
+    />
+  </label>
+
+  <div class="project-rail-actions">
+    <button class="primary-action" :disabled="busy" @click="emit('add')">＋ 添加</button>
+    <button
+      v-if="scanning"
+      class="secondary-action cancel-action"
+      :disabled="busy"
+      @click="emit('stop-scan')"
+    >
+      取消扫描
+    </button>
+    <button v-else class="secondary-action" :disabled="busy" @click="emit('scan')">扫描目录</button>
+  </div>
+
   <div class="project-heading">
     <div>
       <span class="section-label">项目雷达</span>
@@ -137,4 +187,5 @@ const emit = defineEmits<{
       <p>添加一个项目，或选择常用开发目录进行扫描。RepoRadar 不会跟随符号链接。</p>
     </div>
   </div>
+  </aside>
 </template>

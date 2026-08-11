@@ -1,6 +1,25 @@
-# RepoRadar 0.1.2
+# RepoRadar 0.1.3
 
-RepoRadar 0.1.2 提供一个统一的本地 Git 与 GitHub 桌面工作台，并修复 Windows Release 运行体验问题。
+RepoRadar 0.1.3 将前端重构为以仓库为中心的三栏工作台，并统一 GitHub 对象详情和活动反馈。
+
+## 主要变化
+
+- 新增 Global Rail、Project Rail、Main Workspace、Detail Panel 和 Activity Tray 信息架构。
+- Git Changes、Branches、History 与高频 Git 操作集中在主工作区。
+- GitHub Pull Requests、Issues、Actions、Releases 和低频 Tools 改为互斥分区，详情按需进入右侧面板。
+- 支持 1440px 停靠面板、1280px 覆盖式面板和移动端全宽 Sheet。
+- 活动记录仅保留动作名称、时间和结果，不展示命令参数、Token 或原始错误详情。
+
+## 验证
+
+- `npm run check`
+- `npm run test:frontend`：24 files / 56 tests
+- `npm run build`
+- `git diff --check`
+
+## 既有能力
+
+此前版本已提供统一的本地 Git 与 GitHub 桌面工作台，并修复 Windows Release 运行体验问题。
 
 ## 主要能力
 

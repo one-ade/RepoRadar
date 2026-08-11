@@ -1,19 +1,18 @@
 <script setup lang="ts">
-export type WorkspaceSection = "overview" | "projects" | "github" | "operations";
+import type { GlobalSection } from "../workspace";
 
 defineProps<{
-  activeSection: WorkspaceSection;
-  projectCount: number;
-  githubDisabled: boolean;
+  activeSection: GlobalSection;
+  activeOperationCount: number;
 }>();
 
 const emit = defineEmits<{
-  navigate: [section: WorkspaceSection];
+  navigate: [section: GlobalSection];
 }>();
 </script>
 
 <template>
-  <aside class="sidebar">
+  <aside class="sidebar global-rail">
     <div class="brand">
       <span class="brand-mark">R</span>
       <div>
@@ -24,38 +23,29 @@ const emit = defineEmits<{
 
     <nav aria-label="主导航">
       <button
-        :class="['nav-item', activeSection === 'overview' && 'active']"
-        :aria-current="activeSection === 'overview' ? 'page' : undefined"
-        @click="emit('navigate', 'overview')"
+        :class="['nav-item', activeSection === 'repositories' && 'active']"
+        :aria-current="activeSection === 'repositories' ? 'page' : undefined"
+        @click="emit('navigate', 'repositories')"
       >
         <span class="nav-icon">⌁</span>
-        仪表盘
+        <span class="nav-label">仓库</span>
       </button>
       <button
-        :class="['nav-item', activeSection === 'projects' && 'active']"
-        :aria-current="activeSection === 'projects' ? 'page' : undefined"
-        @click="emit('navigate', 'projects')"
-      >
-        <span class="nav-icon">◇</span>
-        项目
-        <span class="count-badge">{{ projectCount }}</span>
-      </button>
-      <button
-        :class="['nav-item', activeSection === 'github' && 'active']"
-        :disabled="githubDisabled"
-        :aria-current="activeSection === 'github' ? 'page' : undefined"
-        @click="emit('navigate', 'github')"
-      >
-        <span class="nav-icon">⑂</span>
-        GitHub
-      </button>
-      <button
-        :class="['nav-item', activeSection === 'operations' && 'active']"
-        :aria-current="activeSection === 'operations' ? 'page' : undefined"
-        @click="emit('navigate', 'operations')"
+        :class="['nav-item', activeSection === 'activity' && 'active']"
+        :aria-current="activeSection === 'activity' ? 'page' : undefined"
+        @click="emit('navigate', 'activity')"
       >
         <span class="nav-icon">↯</span>
-        操作中心
+        <span class="nav-label">活动</span>
+        <span v-if="activeOperationCount" class="count-badge">{{ activeOperationCount }}</span>
+      </button>
+      <button
+        :class="['nav-item', activeSection === 'diagnostics' && 'active']"
+        :aria-current="activeSection === 'diagnostics' ? 'page' : undefined"
+        @click="emit('navigate', 'diagnostics')"
+      >
+        <span class="nav-icon">◌</span>
+        <span class="nav-label">诊断</span>
       </button>
     </nav>
 

@@ -1,18 +1,19 @@
 <script setup lang="ts">
+import type { GitStatus, Project } from "../api";
+import type { GlobalSection, RepositoryView } from "../workspace";
+
 defineProps<{
-  eyebrow: string;
-  title: string;
-  subtitle: string;
-  searchPlaceholder: string;
-  searchQuery: string;
-  showOperations: boolean;
+  project: Project | null;
+  status: GitStatus | null;
+  globalSection: GlobalSection;
+  repositoryView: RepositoryView;
+  activityOpen: boolean;
   activeOperationCount: number;
   scanning: boolean;
   busy: boolean;
 }>();
 
 const emit = defineEmits<{
-  "update:searchQuery": [value: string];
   "toggle-operations": [];
   "stop-scan": [];
   "choose-scan-root": [];
@@ -21,26 +22,36 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <header>
-    <div>
-      <p class="eyebrow">{{ eyebrow }}</p>
-      <h1>{{ title }}</h1>
-      <p class="subtitle">{{ subtitle }}</p>
+  <header class="workspace-header">
+    <div class="workspace-heading">
+      <p class="eyebrow">
+        {{ globalSection === 'diagnostics' ? 'ENVIRONMENT' : globalSection === 'activity' ? 'ACTIVITY' : 'REPOSITORY WORKSPACE' }}
+      </p>
+      <div class="workspace-title-row">
+        <h1>{{ project ? project.name : globalSection === 'diagnostics' ? '环境诊断' : '仓库工作台' }}</h1>
+        <span v-if="project" class="workspace-view-badge">
+          {{ repositoryView === 'github' ? 'GitHub' : repositoryView === 'branches' ? 'Branches' : repositoryView === 'history' ? 'History' : 'Changes' }}
+        </span>
+      </div>
+      <p class="subtitle">
+        {{ project ? project.path : globalSection === 'diagnostics' ? '检查本地 Git、GitHub CLI 与数据库就绪状态。' : '选择一个仓库开始处理 Git 与 GitHub 工作流。' }}
+      </p>
+      <div v-if="project && status" class="workspace-meta" aria-label="当前仓库状态">
+        <span class="branch-pill">⎇ {{ status.branch }}</span>
+        <span>{{ status.files.length }} 个变更</span>
+        <span v-if="status.ahead">↑ {{ status.ahead }}</span>
+        <span v-if="status.behind">↓ {{ status.behind }}</span>
+      </div>
     </div>
-    <input
-      :value="searchQuery"
-      class="search-input"
-      :placeholder="searchPlaceholder"
-      aria-label="搜索项目"
-      @input="emit('update:searchQuery', ($event.target as HTMLInputElement).value)"
-    />
     <div class="header-actions">
       <button
         class="secondary-action"
-        :aria-expanded="showOperations"
+        :class="activityOpen && 'active-action'"
+        :aria-expanded="activityOpen"
+        aria-controls="activity-tray"
         @click="emit('toggle-operations')"
       >
-        操作中心{{ activeOperationCount ? ` · ${activeOperationCount}` : "" }}
+        活动{{ activeOperationCount ? ` · ${activeOperationCount}` : "" }}
       </button>
       <button
         v-if="scanning"
